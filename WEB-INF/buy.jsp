@@ -27,15 +27,13 @@
 <br>
 
 	<form action="transaction" method="post">
-		<button type="submit" name="type" VALUE="sellmarketorder">Market Order</button>
+		<button type="submit" name="type" VALUE="buymarketorder">Market Order</button>
 		<input id="textfield" name="marketquant" type="text" placeholder="quantity"> <br>
-		<!--<a href = "marketorder.jsp"> Market Order</a>--> <br>
-		<!--<a href = "limitorder.jsp"> Limit Order</a>
-		-->
 	</form>
+	
 	<form action="transaction" method="post">
-		<button type="submit" name="type" VALUE="selllimitorder" >limit Order</button>
-		<input id="textfield" name="askPrice" type="text" placeholder="ask price">
+		<button type="submit" name="type" VALUE="buylimitorder" >limit Order</button>
+		<input id="textfield" name="bidPrice" type="text" placeholder="bid price">
 		<input id="textfield" name="limitquant" type="text" placeholder="quantity">
 		
 	</form>

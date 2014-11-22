@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -74,7 +75,7 @@ public void init() throws ServletException {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
+		PrintWriter out = response.getWriter();
 		String type = request.getParameter("type");
 		String sql = null;
 		ResultSet rs = null;
@@ -168,7 +169,7 @@ public void init() throws ServletException {
 		{
 			String str=request.getParameter("search");
 			Vector<stocks> v = (Vector<stocks>)request.getAttribute("vec");
-			System.out.println("here" + v.get(0).stocksym + " " + v.get(0).quant);
+			//System.out.println("here" + v.get(0).stocksym + " " + v.get(0).quant);
 			sql = "select * from stocks where stockSymbol = ?";
 			String result2= "<table>" + " <thead>" +
        		"<tr>" + " <h3>Shares Owned</h3>  </tr> </thead> <tbody> ";
@@ -193,12 +194,12 @@ public void init() throws ServletException {
 				result2= result2.concat("</tbody> </table>");
 				//System.out.println("results" + result2);
 				
-				
-				request.setAttribute("vec", v);
-				request.setAttribute("searchresult", result2 );
+				out.println(result2);
+				//request.setAttribute("vec", v);
+				//request.setAttribute("searchresult", result2 );
 				//request.setAttribute("flag", true);
-				RequestDispatcher rd = getServletContext().getRequestDispatcher("/userhome.jsp");
-				rd.forward(request, response);
+				//RequestDispatcher rd = getServletContext().getRequestDispatcher("/userhome.jsp");
+				//rd.forward(request, response);
 				
 			}catch(SQLException e) {
 				 

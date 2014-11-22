@@ -153,7 +153,7 @@ public class transaction extends HttpServlet {
 		
     }
     
-    public void updateOwnership(String username, String stocksym, int quant, float ltp)
+    public void updateOwnership(String username, String stocksym, int quant, float ltp, int i)
     {
     	String sql2 = "select * from ownership where username = ? and stocksymbol = ?;";
 		
@@ -166,7 +166,7 @@ public class transaction extends HttpServlet {
 			while(rs.next())
 			{
 				int currentquant = rs.getInt(3);
-				int newquant = currentquant - quant;
+				int newquant = currentquant + i * quant;
 				if(newquant > 0)
 				{
 					rs.updateInt(3, newquant);
@@ -262,7 +262,7 @@ public class transaction extends HttpServlet {
 			
 		}
 		
-		else if(type.equals("marketorder"))
+		else if(type.equals("sellmarketorder"))
 		{
 			HttpSession session = request.getSession(true);
 			String username = (String) session.getAttribute("username");
@@ -305,22 +305,17 @@ public class transaction extends HttpServlet {
 		                    int stockquant=Integer.parseInt(retval1);
 		                    float stockprice=Float.parseFloat(retval);
 		                    buyer = rs.getString(5);
-		                   // float buyerBal = admin.userBalance("admin", "adminpass", buyer);
-		                   // float trans_money = stockquant*stockprice;
-		                    
-		                    //retval2 = rs.getDouble(3);
-		                    //if the buyer does not have sufficient balanace to buy all the stocks he placed order for 
-		                    //then the transaction wont happen 
 		                    
 		                    if(quant_sold + stockquant <= quant)
 		                    {
 		                    	rs.deleteRow();
 		                    	ltp = stockprice;
-		                    	//admin.withdrawMoney("admin", "adminpass", buyer, trans_money);
 		                        quant_sold +=  stockquant;
 		                        amount_received +=  stockquant*stockprice;
 		                        
 		                        makeTransaction(stocksym, ltp, quant, username, buyer);
+		                        //Update the ownership of this resource in the buyer 
+		                        updateOwnership(buyer, stocksym, quant, ltp, 1);
 		                        //also as this stock is now bought by second user you have to update 
 		                        //its balance and also update balance of the current user that made the sale  
 		                    }
@@ -340,6 +335,7 @@ public class transaction extends HttpServlet {
 		                    	amount_received += diff*stockprice;
 		                    	rs.updateInt(3, stockquant - diff);
 		                    	makeTransaction(stocksym, ltp, diff, username, buyer);
+		                    	updateOwnership(buyer, stocksym, diff, ltp, 1);
 		                    	//admin.updateltp("admin", "adminpass", stocksym, stockprice);
 		                    	//admin.withdrawMoney("admin", "adminpass", buyer, diff*stockprice);
 		                    	break;
@@ -356,7 +352,7 @@ public class transaction extends HttpServlet {
 						addMoney(username, amount_received);
 			    		//Update ownership 
 			    		
-						updateOwnership(username, stocksym, quant, ltp);
+						updateOwnership(username, stocksym, quant, ltp, -1);
 						
 						conn1.commit();
 						
@@ -379,7 +375,7 @@ public class transaction extends HttpServlet {
 				}
 		}
 		//following code is for limit orders
-		else if(type.equals("limitorder"))
+		else if(type.equals("selllimitorder"))
 		{
 			HttpSession session = request.getSession(true);
 			String username = (String) session.getAttribute("username");
@@ -432,6 +428,7 @@ public class transaction extends HttpServlet {
 	                        amount_received +=  stockquant*stockprice;
 	                        
 	                        makeTransaction(stocksym, ltp, quant, username, buyer);
+	                        updateOwnership(buyer, stocksym, quant, ltp, 1);
 	                        //also as this stock is now bought by second user you have to update 
 	                        //its balance and also update balance of the current user that made the sale  
 	                    }
@@ -444,6 +441,7 @@ public class transaction extends HttpServlet {
 	                    	amount_received += diff*stockprice;
 	                    	rs.updateInt(3, stockquant - diff);
 	                    	makeTransaction(stocksym, ltp, diff, username, buyer);
+	                    	updateOwnership(buyer, stocksym, diff, ltp, 1);
 	                    	break;
 	                    }
 	                    
@@ -470,7 +468,7 @@ public class transaction extends HttpServlet {
 	                    
 	                    addMoney(username, amount_received);
 	                    updateLtp(stocksym, ltp);
-	                    updateOwnership(username, stocksym, quant, ltp);
+	                    updateOwnership(username, stocksym, quant, ltp, -1);
 	                    
 						conn1.commit();
 						
@@ -479,7 +477,7 @@ public class transaction extends HttpServlet {
 						request.setAttribute("stocksym", retval);
 						request.setAttribute("username", username);
 						RequestDispatcher rd = getServletContext().getRequestDispatcher("/sell.jsp");
-						rd.forward(request, response);
+						rd.forward(request, response);	
 					}
 
 					

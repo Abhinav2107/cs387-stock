@@ -4,10 +4,12 @@
 <%@ page import="JDBCProject.stocks"%>
 
 <%! boolean flag; %>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
 <%
 	Vector<stocks> vecObj = (Vector<stocks>) request.getAttribute("vec");
    String name = request.getParameter( "username" );
+   session.setAttribute("stockOwned", vecObj);
    session.setAttribute( "theName", name );
 %>
  <h2> Welcome <%=name%> </h2>
@@ -20,12 +22,11 @@
 		<input type="submit" value="Edit Info">
 	</form>
 	
-	<form action="userlogin" method="post">
-		<br/>Search <input type="text" name="search"> 
-		<input type="submit" value="Submit">
-		<br/><input type="hidden" name="type" VALUE="search"><br/>	
+	
+		<br/>Search <input id="searchText" type="text" name="search"> 
+		<input id = "searchButton" type="button" value="Search">
+			
 		<% session.setAttribute("vec",vecObj); %>
-	</form>
 	 
 	
 	<% //out.print(request.getAttribute("vec")) ;
@@ -48,3 +49,21 @@
 		//request.getAttribute("searchresult");
 	%>
 
+<div id = "searchRes">
+
+</div>
+<script>
+	$("#searchButton").click(function()
+			{
+					$.post("userlogin",
+						{
+							type: "search",
+							search: $("#searchText").val()
+						}, 
+
+						function(data, status)
+						{
+							$("#searchRes").html(data);
+						});
+			});
+</script>

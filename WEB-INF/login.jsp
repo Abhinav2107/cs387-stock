@@ -2,7 +2,7 @@
     pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
-<%! boolean flag; %> 
+<% boolean flag = false; %> 
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -12,7 +12,7 @@
 <body>
 	<center> 
 		<h2>Signup Details</h2>
-		<% if (flag){ %> <p> Username and Password dont match</p> <%} %>
+		<% if (flag){ out.print("Username and password doesn't match");} %>
       			
 		<form action="userlogin" method="post"> 
 		<br/>Username:<input type="text" name="username"> 
