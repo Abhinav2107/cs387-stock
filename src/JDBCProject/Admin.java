@@ -26,8 +26,8 @@ public class Admin extends HttpServlet {
 	public void init() throws ServletException {
 	      //Open the connection here
 		
-		String dbURL2 = "jdbc:postgresql://10.105.1.12/cs387";
-	    String user = "db120050030";
+		String dbURL2 = "jdbc:postgresql://localhost/cs387";
+	    String user = "aman";
 	    String pass = "password";
 
 	    try {
@@ -141,6 +141,7 @@ public class Admin extends HttpServlet {
     
     public void updateltp(String admin, String pass, String stocksym, float amount)
     {
+    	System.out.println("I am fucking here");
     	if(admin == this.adminId && pass == this.password)
     	{
     		String sql = "select * from stocksymbol = '" + stocksym + "';";

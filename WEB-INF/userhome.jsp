@@ -25,8 +25,7 @@
 		<input type="submit" value="Submit">
 		<br/><input type="hidden" name="type" VALUE="search"><br/>	
 		<% session.setAttribute("vec",vecObj); %>
-	 
-	</form>	
+	</form>
 	 
 	
 	<% //out.print(request.getAttribute("vec")) ;
@@ -40,8 +39,7 @@
 					<input type="hidden" name="username" VALUE=<%=name%> >
 					<input type="hidden" name="stock" VALUE=<%= vecObj.get(i).stocksym %> >
 					<input type="hidden" name="type" VALUE="sell" >
-					<input type="submit" value="sell">
-					
+					<input type="submit" value="sell">		
 				</form>
 				<%
 				

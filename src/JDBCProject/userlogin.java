@@ -7,23 +7,13 @@ import java.sql.ResultSet;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Properties;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 
 import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.ServletInputStream;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
-import java.io.PrintWriter;
-import java.security.Principal;
 import java.util.Vector;
 /**
  * Servlet implementation class userlogin
@@ -36,8 +26,8 @@ public class userlogin extends HttpServlet {
 public void init() throws ServletException {
       //Open the connection here
 	
-	String dbURL2 = "jdbc:postgresql://10.105.1.12/cs387";
-    String user = "db120050030";
+	String dbURL2 = "jdbc:postgresql://localhost/cs387";
+    String user = "aman";
     String pass = "password";
 
     try {
