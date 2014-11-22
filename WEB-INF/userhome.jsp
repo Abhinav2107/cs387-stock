@@ -9,8 +9,10 @@
 <%
 	Vector<stocks> vecObj = (Vector<stocks>) request.getAttribute("vec");
    String name = request.getParameter( "username" );
+   String transactions = request.getParameter("transaction");
+   session.setAttribute("transaction", transactions);
    session.setAttribute("stockOwned", vecObj);
-   session.setAttribute( "theName", name );
+   session.setAttribute( "username", name );
 %>
  <h2> Welcome <%=name%> </h2>
 	
@@ -67,3 +69,7 @@
 						});
 			});
 </script>
+
+<div id = "transaction">
+	<%= request.getAttribute("transaction") %>
+</div>

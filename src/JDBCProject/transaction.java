@@ -153,6 +153,31 @@ public class transaction extends HttpServlet {
 		
     }
     
+    public void redeemMoney(String username, float addend) throws SQLException
+    {
+		String sql2 = "select balance, username from users where username = ?;";
+		
+		try{
+			preparedStatement = conn1.prepareStatement(sql2, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
+			preparedStatement.setString(1, username);
+			ResultSet rs = preparedStatement.executeQuery();
+			while(rs.next())
+			{
+				float am = rs.getFloat(1);
+				if(am-addend >= 0) {rs.updateFloat(1, (float) (am - addend)); conn1.commit(); rs.updateRow();}
+				else conn1.rollback();
+				
+			}
+		}
+		catch (SQLException e) 
+		{
+			System.out.println(e);
+			 conn1.rollback();
+ 
+			}
+		
+    }
+    
     public void updateOwnership(String username, String stocksym, int quant, float ltp, int i)
     {
     	String sql2 = "select * from ownership where username = ? and stocksymbol = ?;";
@@ -211,6 +236,52 @@ public class transaction extends HttpServlet {
 		return isGreater;
     }
     
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String type = request.getParameter("type");
+		String sql = null;
+		ResultSet rs = null;
+		//System.out.println("I was here too");
+		if(type.equals("buy"))
+		{
+			String stocksym=request.getParameter("stocksym");
+			String username=request.getParameter("username");
+			//System.out.println("I was here");
+			//System.out.println("stock " + stocksym + " " + username);
+			String resultStock= "";
+			sql= "select stockSymbol, companyName, ltp from stocks where stockSymbol = ?";
+			try{
+				preparedStatement = conn1.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
+				preparedStatement.setString(1, stocksym);
+				rs = preparedStatement.executeQuery();
+				
+				String retval = "";
+		        String retval1 = "";
+		        double retval2;
+		        
+				while(rs.next())
+				{
+                    retval = rs.getString(1);
+                    retval1 = rs.getString(2);
+                    retval2 = rs.getDouble(3);
+                    
+                    resultStock = "<table border=\"1\"  > <thead> <tr> <td> Share </td> <td> Company </td> <td> Last Traded Price </td></tr> " +
+                    		"</thead><tr> <td>" +  retval +  "</td> <td> " + retval1 + " </td> <td>" + retval2 +"</td></tr> </table>";
+				}
+				//System.out.println("stock details" + resultStock);
+				
+				//System.out.println("sell tag" + username + retval);
+				request.setAttribute("resultStock", resultStock);
+				request.setAttribute("stocksym", retval);
+				request.setAttribute("username", username);
+				RequestDispatcher rd = getServletContext().getRequestDispatcher("/sell.jsp");
+				rd.forward(request, response);
+			}catch (SQLException e) 
+			{
+				System.out.println(e.getMessage());
+	 
+				}		
+		}
+	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
@@ -222,10 +293,10 @@ public class transaction extends HttpServlet {
 		//System.out.println("I was here too");
 		if(type.equals("sell"))
 		{
-			String stocksym=request.getParameter("stock");
-			String username=request.getParameter("username");
-			//System.out.println("I was here");
-			//System.out.println("stock " + stocksym + " " + username);
+			String stocksym=request.getParameter("stocksym");
+			HttpSession session = request.getSession(true);
+			String username = (String) session.getAttribute("username");
+
 			String resultStock= "";
 			sql= "select stockSymbol, companyName, ltp from stocks where stockSymbol = ?";
 			try{
@@ -252,7 +323,7 @@ public class transaction extends HttpServlet {
 				request.setAttribute("resultStock", resultStock);
 				request.setAttribute("stocksym", retval);
 				request.setAttribute("username", username);
-				RequestDispatcher rd = getServletContext().getRequestDispatcher("/sell.jsp");
+				RequestDispatcher rd = getServletContext().getRequestDispatcher("/buy.jsp");
 				rd.forward(request, response);
 			}catch (SQLException e) 
 			{
@@ -268,7 +339,6 @@ public class transaction extends HttpServlet {
 			String username = (String) session.getAttribute("username");
 			String stocksym= (String) session.getAttribute("stocksym");
 			String stock= (String) session.getAttribute("stock");
-			//System.out.println("transaction test " + username + " " + stocksym + " " + stock);
 			int quant = Integer.parseInt(request.getParameter("marketquant"));
 			
 			boolean isGreater = validateQuant(username, stocksym, quant);
@@ -315,17 +385,10 @@ public class transaction extends HttpServlet {
 		                        
 		                        makeTransaction(stocksym, ltp, quant, username, buyer);
 		                        //Update the ownership of this resource in the buyer 
-		                        updateOwnership(buyer, stocksym, quant, ltp, 1);
+		                        updateOwnership(buyer, stocksym, stockquant, ltp, 1);
 		                        //also as this stock is now bought by second user you have to update 
 		                        //its balance and also update balance of the current user that made the sale  
 		                    }
-		                    
-		                    /*else if(buyerBal < trans_money)
-		                    {
-		                    	System.out.println("insufficent balance in account of " + buyer + " :: removing the transaction from buy order table");
-		                    	rs.deleteRow();
-		                    	
-		                    }*/
 		                   
 		                    else if(quant_sold + stockquant > quant )
 		                    {
@@ -352,7 +415,7 @@ public class transaction extends HttpServlet {
 						addMoney(username, amount_received);
 			    		//Update ownership 
 			    		
-						updateOwnership(username, stocksym, quant, ltp, -1);
+						updateOwnership(username, stocksym, quant_sold, ltp, -1);
 						
 						conn1.commit();
 						
@@ -428,7 +491,7 @@ public class transaction extends HttpServlet {
 	                        amount_received +=  stockquant*stockprice;
 	                        
 	                        makeTransaction(stocksym, ltp, quant, username, buyer);
-	                        updateOwnership(buyer, stocksym, quant, ltp, 1);
+	                        updateOwnership(buyer, stocksym, stockquant, ltp, 1);
 	                        //also as this stock is now bought by second user you have to update 
 	                        //its balance and also update balance of the current user that made the sale  
 	                    }
@@ -454,7 +517,7 @@ public class transaction extends HttpServlet {
 	                			preparedStatement.setString(1, stocksym);
 	                			preparedStatement.setString(2, username);
 	                			preparedStatement.setFloat(3, askPrice);
-	                			preparedStatement.setInt(4, quant);	
+	                			preparedStatement.setInt(4, quant-quant_sold);	
 	                			preparedStatement.setTimestamp(5,getCurrentTimeStamp());
 	                			preparedStatement.executeUpdate();
 	                		}
@@ -468,7 +531,7 @@ public class transaction extends HttpServlet {
 	                    
 	                    addMoney(username, amount_received);
 	                    updateLtp(stocksym, ltp);
-	                    updateOwnership(username, stocksym, quant, ltp, -1);
+	                    updateOwnership(username, stocksym, quant_sold, ltp, -1);
 	                    
 						conn1.commit();
 						
@@ -495,6 +558,231 @@ public class transaction extends HttpServlet {
 			
 			//check whether the user has required quant or not 
 		}
+		
+		// now deal with the buy orders 
+		if(type.equals("buymarketorder"))
+		{
+			HttpSession session = request.getSession(true);
+			String username = (String) session.getAttribute("username");
+			String stocksym= (String) session.getAttribute("stocksym");
+			String stock= (String) session.getAttribute("stock");
+			//System.out.println("transaction test " + username + " " + stocksym + " " + stock);
+			int quant = Integer.parseInt(request.getParameter("marketquant"));
+			
+			boolean isGreater = validateQuant(username, stocksym, quant);
+				
+				if(!isGreater)
+				{
+					request.setAttribute("error", "Insufficient amount");
+					request.setAttribute("resultStock", stock);
+					RequestDispatcher rd = getServletContext().getRequestDispatcher("/buy.jsp");
+					rd.forward(request, response);
+				}
+			
+				else{
+				//float userBal = admin.userBalance("admin", "adminpass", username);
+					sql = "select id, askprice, quantity, selldatetime, username  from sellOrders where stocksymbol=? order by bidPrice asc, buyDateTime asc limit 10";
+					try{
+						preparedStatement = conn1.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
+						preparedStatement.setString(1, stocksym);
+						rs = preparedStatement.executeQuery();
+						int quant_bought = 0;
+						float amount_due= 0;
+						float ltp = 0;
+						
+						String retval = "";
+				        String retval1 = "";
+				        String seller="";
+				        //stmt = conn.createStatement();
+						while(rs.next())
+						{
+		                    retval = rs.getString(2);
+		                    retval1 = rs.getString(3);
+		                    int stockquant=Integer.parseInt(retval1);
+		                    float stockprice=Float.parseFloat(retval);
+		                    seller= rs.getString(5);
+		                    
+		                    if(quant_bought + stockquant <= quant)
+		                    {
+		                    	rs.deleteRow();
+		                    	ltp = stockprice;
+		                        quant_bought +=  stockquant;
+		                        amount_due +=  stockquant*stockprice;
+		                        
+		                        makeTransaction(stocksym, ltp, stockquant, seller, username);
+		                        //Update the ownership of this resource in the buyer 
+		                        updateOwnership(seller, stocksym, stockquant, ltp, -1);
+		                        //also as this stock is now bought by second user you have to update 
+		                        //its balance and also update balance of the current user that made the sale  
+		                    }
+		                   
+		                    else if(quant_bought + stockquant > quant )
+		                    {
+		                    	int diff = quant - quant_bought;
+		                    	quant_bought = quant;
+		                    	ltp = stockprice;
+		                    	amount_due += diff*stockprice;
+		                    	rs.updateInt(3, stockquant - diff);
+		                    	makeTransaction(stocksym, ltp, diff, seller, username);
+		                    	updateOwnership(seller, stocksym, diff, ltp, -1);
+		                    	break;
+		                    }                   
+						} 
+						
+						updateLtp(stocksym, ltp);
+
+						//ADD MONEY TO ACCOUNT
+						
+						redeemMoney(username, amount_due);
+			    		//Update ownership 
+			    		
+						updateOwnership(username, stocksym, quant, ltp, -1);
+						
+						conn1.commit();
+						
+						request.setAttribute("error", quant_bought +" stocks bought");
+						request.setAttribute("resultStock", stock);
+						request.setAttribute("stocksym", retval);
+						request.setAttribute("username", username);
+						RequestDispatcher rd = getServletContext().getRequestDispatcher("/buy.jsp");
+						rd.forward(request, response);
+					}catch (SQLException e) 
+					{
+						System.out.println(e.getMessage());
+						try {
+							conn1.rollback();
+						} catch (SQLException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+					}
+				}
+				
+				
+		}
+		
+		else if(type.equals("buylimitorder"))
+		{
+			HttpSession session = request.getSession(true);
+			String username = (String) session.getAttribute("username");
+			String stocksym= (String) session.getAttribute("stocksym");
+			String stock= (String) session.getAttribute("stock");
+			
+			int quant = Integer.parseInt(request.getParameter("limitquant"));
+			float bidPrice = Float.parseFloat(request.getParameter("bidPrice"));
+			
+			boolean isGreater = validateQuant(username, stocksym, quant);
+			
+			if(!isGreater)
+			{
+				request.setAttribute("error", "Insufficient amount");
+				request.setAttribute("resultStock", stock);
+				RequestDispatcher rd = getServletContext().getRequestDispatcher("/buy.jsp");
+				rd.forward(request, response);
+			}
+			
+			else
+			{
+				sql = "select id, askprice, quantity, selldatetime, username  from sellOrders where stocksymbol=? order by bidPrice desc, buyDateTime asc limit 10";
+				try{
+					preparedStatement = conn1.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
+					preparedStatement.setString(1, stocksym);
+					rs = preparedStatement.executeQuery();
+					int quant_bought= 0;
+					float amount_due = 0;
+					float ltp = 0;
+
+					String retval = "";
+			        String retval1 = "";
+			        String seller= "";
+			        
+					while(rs.next())
+					{
+	                    retval = rs.getString(2);
+	                    retval1 = rs.getString(3);
+	                    int stockquant=Integer.parseInt(retval1);
+	                    float stockprice=Float.parseFloat(retval);
+	                    seller = rs.getString(5);
+	                    
+	                    if(quant_bought + stockquant <= quant && stockprice <= bidPrice)
+	                    {
+	                    	rs.deleteRow();
+	                    	ltp = stockprice;  // I am assuming that the transaction will happen at the rate of the buyer and 
+	                    	//the seller will be benefitted out of it
+	                    	
+	                        quant_bought +=  stockquant;
+	                        amount_due +=  stockquant*stockprice;
+	                        
+	                        makeTransaction(stocksym, ltp, stockquant, seller, username);
+	                        updateOwnership(seller, stocksym, quant, ltp, -1);
+	                        //also as this stock is now bought by second user you have to update 
+	                        //its balance and also update balance of the current user that made the sale  
+	                    }
+	                   
+	                    else if(quant_bought + stockquant > quant && stockprice <= bidPrice)
+	                    {
+	                    	int diff = quant - quant_bought;
+	                    	quant_bought= quant;
+	                    	ltp = stockprice;
+	                    	amount_due += diff*stockprice;
+	                    	rs.updateInt(3, stockquant - diff);
+	                    	makeTransaction(stocksym, ltp, diff, seller, username);
+	                    	updateOwnership(seller, stocksym, diff, ltp, -1);
+	                    	break;
+	                    }
+	                    
+	                    else if(stockprice > bidPrice) //no available buy order to trade
+	                    {
+	                    	//add this to sell order table 
+	                    	String sql2 = "insert into buyOrders values (?, ?, ?, ?, ?);";
+	                		try{
+	                			preparedStatement = conn1.prepareStatement(sql2, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
+	                			preparedStatement.setString(1, stocksym);
+	                			preparedStatement.setString(2, username);
+	                			preparedStatement.setFloat(3, bidPrice);
+	                			preparedStatement.setInt(4, quant - quant_bought);	
+	                			preparedStatement.setTimestamp(5,getCurrentTimeStamp());
+	                			preparedStatement.executeUpdate();
+	                		}
+	                		catch (SQLException e) 
+	                		{
+	                			System.out.println(e);
+	                 
+	                			}
+	                    	break;
+	                    }
+	                    
+	                    redeemMoney(username, amount_due);
+	                    updateLtp(stocksym, ltp);
+	                    updateOwnership(username, stocksym, quant_bought, ltp, 1);
+	                    
+						conn1.commit();
+						
+						request.setAttribute("error", "<center> Order placed </center>");
+						request.setAttribute("resultStock", stock);
+						request.setAttribute("stocksym", retval);
+						request.setAttribute("username", username);
+						RequestDispatcher rd = getServletContext().getRequestDispatcher("/buy.jsp");
+						rd.forward(request, response);	
+					}
+
+					
+				}catch (SQLException e) 
+				{
+					System.out.println(e.getMessage());
+					try {
+						conn1.rollback();
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+			}
+			
+			//check whether the user has required quant or not 
+		}
+		
+		
 	}
 
 }

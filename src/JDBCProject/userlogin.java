@@ -15,6 +15,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import java.util.Vector;
 /**
  * Servlet implementation class userlogin
@@ -136,8 +138,42 @@ public void init() throws ServletException {
 		                    		+ "</tr>");
 		                   // System.out.println(s.stocksym);
 						}
+						
+						sql = "select * from transactions where buyer = ? or seller = ?";
+						preparedStatement = conn1.prepareStatement(sql);
+						preparedStatement.setString(1, username);
+						preparedStatement.setString(2, username);
+						rs = preparedStatement.executeQuery();
+						
+					       String result2= "<table>" + " <thead>" +
+					       		"<tr>" + " <h3>Transactions</h3>  </tr> </thead> <tbody> ";
+					        
+							while(rs.next())
+							{
+			                    String ret = rs.getString(1);
+			                    float ret1 = rs.getFloat(2);
+			                    int ret2 = rs.getInt(3);
+			                    String ret3 = rs.getString(4);
+			                    String ret4 = rs.getString(5);
+			                    String ret5 = rs.getString(6);
+			                    
+			                    result2 = result2.concat("<tr>"
+			                    		//+ "<td>" + retval + "</td>"
+			                    		+ "<td>" + ret + "</td>"
+			                    		+ "<td>" + Integer.toString(ret2) + "</td>"
+			                    		+ "<td>" + Float.toString(ret1) + "</td>"
+			                    		+ "<td>" + ret3 + "</td>"
+			                    		+ "<td>" + ret4 + "</td>"
+			                    		+ "<td>" + ret5+ "</td>"
+			                    		+ "</tr>");
+			                   // System.out.println(s.stocksym);
+							}
+						
+						
 						result1= result1.concat("</tbody> </table>");
-						System.out.println(v.get(0).stocksym + " " + v.get(0).quant);
+						result2= result2.concat("</tbody> </table>");
+						
+						request.setAttribute("transaction", result2);
 						request.setAttribute("result", result1 );
 						request.setAttribute("username", username);
 						request.setAttribute("vec", v);
@@ -168,6 +204,8 @@ public void init() throws ServletException {
 		else if(type.equals("search"))
 		{
 			String str=request.getParameter("search");
+			HttpSession session = request.getSession(true);
+			String username = (String) session.getAttribute("username");
 			Vector<stocks> v = (Vector<stocks>)request.getAttribute("vec");
 			//System.out.println("here" + v.get(0).stocksym + " " + v.get(0).quant);
 			sql = "select * from stocks where stockSymbol = ?";
@@ -189,17 +227,14 @@ public void init() throws ServletException {
                     		//+ "<td>" + retval + "</td>"
                     		+ "<td>" + retval1 + "</td>"
                     		+ "<td>" + Integer.toString(retval2) + "</td>"
+                    		+ "<td> <input id = \"buyButton\" type=\"button\" ONCLICK=\"location.href = 'transaction?type=buy&stocksym="+str+"'\" "						+" } " 
+							+ "value=\"buy\"> </td>"
                     		+ "</tr>");
 				}
 				result2= result2.concat("</tbody> </table>");
 				//System.out.println("results" + result2);
 				
 				out.println(result2);
-				//request.setAttribute("vec", v);
-				//request.setAttribute("searchresult", result2 );
-				//request.setAttribute("flag", true);
-				//RequestDispatcher rd = getServletContext().getRequestDispatcher("/userhome.jsp");
-				//rd.forward(request, response);
 				
 			}catch(SQLException e) {
 				 
