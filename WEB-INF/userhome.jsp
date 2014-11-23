@@ -90,31 +90,42 @@
    session.setAttribute("stockOwned", vecObj);
    session.setAttribute( "username", name );
 %>
-<div id = "welcome" style = "width: 67%; float: left;"> 
-<h2><span class = "text"> Welcome <%=name%> </span></h2>
-	
-	<!--<a href="wishlist.jsp">Wish List</a>
-	-->
-	<form action="userlogin" method="post">
-		<input type="hidden" name="username" VALUE=<%=name%> >
+<div style = "width: 100%;">
+<table class = "table">
+<tr>
+<td style = "width: 20%;">
+<div id = "welcome" style = "width: 100%; float: left;"> 
+<input type = "button" class = "btn btn-large btn-info" value = "Welcome <%=name%>" />
+<!-- <h2><span class = "text"> Welcome <%=name%> </span></h2> -->
+</div>	
+</td>
+<td style = "width: 47%; vertical-align: middle;">
+    <div style = "float: right; width: 40%; text-align: center; vertical-align: top; padding-bottom: 10px;">
+	<form action="userlogin" method="post" style = "display: inline;">
+		<input type="hidden" name="username" VALUE="<%=name%>" >
 		<input type="hidden" name="type" VALUE="editinfo" >
-		<input type="submit" class = "btn btn-primary" value="Edit Info">
+		<input type="submit" style = "float: right;" class = "btn btn-primary" value="Edit Info">
 	</form>
-	
-</div>
-    <div id = "search" style = "width:33%; float: left; text-align: center;">
-    <br /><br /><br /><br />
-        <input id="searchText" type="text" class = "input" name="search">&nbsp;&nbsp;&nbsp; 
-        <input id = "searchButton" type="button" class = "btn btn-primary" value="Search">
     </div>
-		<br/>
-        <br />
+</td>
+<td style = "width: 33%; vertical-align: middle;">	
+    <div id = "search" style = "width:100%; float: left; text-align: center; vertical-align: top;">
+        <input id="searchText" type="text" style = "vertical-align: top;" class = "input" name="search">&nbsp;&nbsp;&nbsp; 
+        <input id = "searchButton" type="button" style = "vertical-align: top;" class = "btn btn-primary" value="Search">
+    </div>
+</td>
+</tr>
+</table>
+</div>
     <div id = "wrapper" style = "width:100%;">
-    <div id = "owned" style = "width:32%; height: 100%; text-align: center; margin-right: 10px; background-color: #d3d3d3; float:left; position: relative;">			
+    <table class = "table">
+    <tr>
+    <td style = "width:33%;">
+    <div id = "owned" style = "width:95%; height: 100%; min-height: 600px; text-align: center; margin-right: 10px; background-color: #eaeaea; float:left; position: relative;">			
 		<% session.setAttribute("vec",vecObj); %>
 	 
     <h3> Owned Stocks </h3>	
-                <table class = "table">
+                <table>
                 <tr style = "font-size: 18px;">
                 <td style = "width: 30%; align: center;"><strong>Symbol</strong></td>
                 <td style = "width: 20%; align: center;"><strong>Quantity</strong></td>
@@ -135,8 +146,8 @@
                 <td style = "width: 20%; align: center;"><% out.print(vecObj.get(i).salesprice); %></td>
                 <td style = "width: 30%; align: center;">
                  <form action="transaction" method="post">
-					<input type="hidden" name="username" VALUE=<%=name%>
-					<input type="hidden" name="stock" VALUE=<%= vecObj.get(i).stocksym %>
+					<input type="hidden" name="username" VALUE="<%=name%>">
+					<input type="hidden" name="stock" VALUE="<%= vecObj.get(i).stocksym %>">
 					<input type="hidden" name="type" VALUE="sell" >
 					<input type="submit" class = "btn btn-info" value="sell">		
 				</form>
@@ -150,14 +161,21 @@
 	%>
     </table>
 </div>
-
-<div id = "transaction" style = "width:32%; height: 100%; float: left; text-align: center; margin-right: 10px; background-color: #d3d3d3;">
+</td>
+<td style = "width: 33%;">
+<div id = "transaction" style = "width:95%; height: 100%; min-height: 600px; float: left; text-align: center; margin-right: 10px; background-color: #eaeaea;">
 	<%= request.getAttribute("transaction") %>
 </div>
-
-<div id = "searchRes" style = "width:32%; height: 100%; float: left; text-align: center; margin-right: 10px; background-color: #d3d3d3;">
-
+</td>
+<td style = "width: 33%;">
+<div id = "searchOutput" style = "width:95%; height: 100%; min-height: 600px; float: left; text-align: center; margin-right: 10px; background-color: #eaeaea;">
+<h3>Search Results</h3>
+<div id = "searchRes">
 </div>
+</div>
+</td>
+</tr>
+</table>
 </div>
 <script>
 	$("#searchButton").click(function()
