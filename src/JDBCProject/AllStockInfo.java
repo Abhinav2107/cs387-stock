@@ -1,6 +1,8 @@
+package JDBCProject;
 
-// this one implements a rudimentary output as well, creating a table
-// of all the stocks in the database dynamically
+
+//this one implements a rudimentary output as well, creating a table
+//of all the stocks in the database dynamically
 
 import java.sql.*;
 import java.util.*;
@@ -17,19 +19,19 @@ public class AllStockInfo extends HttpServlet
 	public void init() throws ServletException
 	{
 		String dbURL2 = "jdbc:postgresql://10.105.1.12/cs387";
-        String user = "db14v051001";
-        String pass = "14v051001";
+     String user = "db14v051001";
+     String pass = "14v051001";
 
-        try
-        {
+     try
+     {
 			Class.forName("org.postgresql.Driver");
 		
 			conn1 = DriverManager.getConnection(dbURL2, user, pass);
 			allStocksStatement = conn1.prepareStatement("select * from stocks order by ?");
 			System.out.println("init"+conn1);
-        }
-        catch (Exception e)
-        {	System.out.println(e);	}
+     }
+     catch (Exception e)
+     {	System.out.println(e);	}
 	}
 
 	public void destroy()
@@ -41,7 +43,7 @@ public class AllStockInfo extends HttpServlet
 		}
 		catch(Exception e)
 		{	System.out.println(e);	}
-    }
+ }
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws
 	ServletException, IOException
@@ -49,7 +51,7 @@ public class AllStockInfo extends HttpServlet
 		String orderedBy = request.getParameter("orderedBy");
 			
 		try
-        {
+     {
 			allStocksStatement.setString(1, orderedBy);
 			ResultSet rs = allStocksStatement.executeQuery();
 			

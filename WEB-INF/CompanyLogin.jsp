@@ -2,27 +2,42 @@
     pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
-<%! boolean flag = false; %> 
+<%  String flag = (String) request.getParameter("flag");
+	String errorMessage = (String) request.getAttribute("error");%> 
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Company Login Page</title>
-
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Virtual Stock Exchange - Login</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="css/style.css" rel="stylesheet" media="screen">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
 </head>
 <body>
-	<center> 
-		<h2>Company Login</h2>
-		<% if (flag){ %> <p> Username and Password don't match.</p> <%} %>
-      			
-		<form action="CompanyLogin" method="post"> 
-		<br/>Username:<input type="text" name="username"> 
-		<br/>Password:<input type="password" name="password"> 
-		<br/><input type="submit" value="Submit">
-		<br/><input type="hidden" name="type" VALUE="login">
-		
-		<a href="CompanyRegister.jsp">Register Here!!</a>
-		</form> 
-	</center>
+<div id="wrapper">
+
+    <form name="login-form" class="login-form" action="CompanyLogin" method="post">
+
+        <div class="header">
+        <h2>Company Login</h2>
+		<% if (flag != null){ out.print("Username and Password do not match");} %>
+        </div>
+
+        <div class="content">
+        <input name="username" type="text" class="input username" placeholder="Username" />
+        <input name="password" type="password" class="input password" placeholder="Password" />
+        <input type="hidden" name="type" value="login" />
+        </div>
+
+        <div class="footer">
+        <input type="submit" name="submit" value="Login" class="button" />
+        <input type="button" name="register" value="Register" class="register" onclick="location.href = 'CompanyRegister.jsp'"/>
+        </div>
+
+    </form>
+
+</div>
+<div class="gradient"></div>
 </body>
 </html>
 

@@ -12,7 +12,20 @@ drop table stocks;
 	--~ zipcode numeric(6,0)
 --~ );
 
+create table company
+(
+	companyID char(8), 
+	companyName varchar(50), 
+	username varchar(20), 
+	password varchar(50), 
+	phone numeric(10), 
+	address varchar(50), 
+	email varchar(50), 
+	primary key (companyID)
+);
+
 create table users
+
 (
 	username varchar(20) primary key,
 	password varchar(50) not null,

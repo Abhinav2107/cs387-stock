@@ -2,7 +2,8 @@
     pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
-<% boolean flag = false; %> 
+<%  String flag = (String) request.getParameter("flag");
+	String errorMessage = (String) request.getAttribute("error");%> 
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -19,7 +20,7 @@
 
         <div class="header">
         <h2>User Login</h2>
-		<% if (flag){ out.print("Username and Password do not match");} %>
+		<% if (flag != null){ out.print("Username and Password do not match");} %>
         </div>
 
         <div class="content">

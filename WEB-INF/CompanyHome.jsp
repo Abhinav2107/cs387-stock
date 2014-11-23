@@ -1,6 +1,7 @@
 <%@ page import="java.util.*" %>
 <%@ page import="java.io.*" %>
-
+<%@ page import="JDBCProject.CompanyStock" %>
+<%@ page import="JDBCProject.TransRecord" %>
 <%
 	Vector<CompanyStock> stockVector = (Vector<CompanyStock>) request.getAttribute("stocks");
 	Vector<TransRecord> transVector = (Vector<TransRecord>) request.getAttribute("transactions");

@@ -1,5 +1,6 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page import="java.util.*" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -16,12 +17,15 @@
 	//if(!stock.equals(""))  <%
 	String stocksym = (String) request.getAttribute("stocksym");
 	String stock = (String) request.getAttribute("resultStock");
+	String Order = (String) request.getAttribute("orders");
 	String user= (String) request.getAttribute("username");
 	String errorMessage = (String) request.getAttribute("error");
 	session.setAttribute("stocksym", stocksym);
 	session.setAttribute("username", user);
 	session.setAttribute("stock", stock);
-	if(stock != null) out.print(stock);%>
+	//Map<String ,Float> map = (HashMap<String, Float>) session.getAttribute("transMap");
+	if(stock != null) out.print(stock);
+	%>
 	
 	</center>
 <br>
@@ -42,5 +46,15 @@
 	
 	</center>
 	<% if(errorMessage!=null) out.print(errorMessage);%>
+	<% out.print(session.getAttribute("orderTable")); %>
+	<%/* 
+	for (Map.Entry<String, Float> entry : map.entrySet()) {
+	    String key = entry.getKey();
+	    Float value = entry.getValue();
+	    
+	    out.println(key + ", " + value);
+	    // ...
+	} */%>
+	
 </body>
 </html>

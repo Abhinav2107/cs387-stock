@@ -21,6 +21,8 @@ import javax.servlet.http.HttpSession;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Servlet implementation class transaction
@@ -312,6 +314,45 @@ public class transaction extends HttpServlet {
 					"</thead><tr> <td>" +  retval +  "</td> <td> " + retval1 + " </td> <td>" + retval2 +"</td></tr> </table>";
 				}
 				//System.out.println("stock details" + resultStock);
+				
+				sql= "select stocksymbol, askPrice, quantity from sellOrders where stockSymbol = ?";
+				String order="";
+				preparedStatement = conn1.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
+				preparedStatement.setString(1, stocksym);
+				rs = preparedStatement.executeQuery();
+				
+				
+				while(rs.next())
+				{
+					String ret = rs.getString(1);
+					float ret1 = rs.getFloat(2);
+					int ret2 = rs.getInt(3);
+
+					order = "<h1> Order Table </h1> <table class=\"table\" border=\"1\"  > <thead> <tr> <td> Share </td> <td> Quantity </td> <td> Ask Price </td></tr> " +
+					"</thead><tr> <td>" +  ret +  "</td> <td> " + ret2 + " </td> <td>" + ret1 +"</td></tr> </table>";
+				}
+				
+/*				sql= "select tradedPrice, transadatetime from transactions where stockSymbol = ? order by transadatetime asc;";
+				//preparedStatement = conn1.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
+				preparedStatement.setString(1, stocksym);
+				rs = preparedStatement.executeQuery();
+				
+				Map<String, Float> map = new HashMap<String, Float>();
+
+				
+				while(rs.next())
+				{
+					String ret = rs.getString(2);
+					float ret1 = rs.getFloat(1);
+					//int ret2 = rs.getInt(3);
+					
+					map.put(ret, ret1);
+					//order = "<h1> Order Table </h1> <table class=\"table\" border=\"1\"  > <thead> <tr> <td> Share </td> <td> Quantity </td> <td> Ask Price </td></tr> " +
+					//"</thead><tr> <td>" +  ret +  "</td> <td> " + ret2 + " </td> <td>" + ret1 +"</td></tr> </table>";
+				}
+				
+				session.setAttribute("transMap", map);*/
+				session.setAttribute("orderTable", order);
 
 				System.out.println("buytag " + username + " " + stocksym);
 				request.setAttribute("resultStock", resultStock);
@@ -361,8 +402,47 @@ public class transaction extends HttpServlet {
 					resultStock = "<table border=\"1\"  > <thead> <tr> <td> Share </td> <td> Quantity </td> <td> Last Traded Price </td></tr> " +
 					"</thead><tr> <td>" +  retval +  "</td> <td> " + retval1 + " </td> <td>" + retval2 +"</td></tr> </table>";
 				}
+				
+				sql= "select stocksymbol, askPrice, quantity from sellOrders where stockSymbol = ?";
+				String order="";
+				preparedStatement = conn1.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
+				preparedStatement.setString(1, stocksym);
+				rs = preparedStatement.executeQuery();
+				
+				
+				while(rs.next())
+				{
+					String ret = rs.getString(1);
+					float ret1 = rs.getFloat(2);
+					int ret2 = rs.getInt(3);
 
+					order = "<h1> Order Table </h1> <table class=\"table\" border=\"1\"  > <thead> <tr> <td> Share </td> <td> Quantity </td> <td> Ask Price </td></tr> " +
+					"</thead><tr> <td>" +  ret +  "</td> <td> " + ret2 + " </td> <td>" + ret1 +"</td></tr> </table>";
+				}
+				
+/*				sql= "select tradedPrice, transadatetime from transactions where stockSymbol = ? order by transadatetime asc;";
+				//preparedStatement = conn1.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
+				preparedStatement.setString(1, stocksym);
+				rs = preparedStatement.executeQuery();
+				
+				Map<String, Float> map = new HashMap<String, Float>();
+
+				
+				while(rs.next())
+				{
+					String ret = rs.getString(2);
+					float ret1 = rs.getFloat(1);
+					//int ret2 = rs.getInt(3);
+					
+					map.put(ret, ret1);
+					//order = "<h1> Order Table </h1> <table class=\"table\" border=\"1\"  > <thead> <tr> <td> Share </td> <td> Quantity </td> <td> Ask Price </td></tr> " +
+					//"</thead><tr> <td>" +  ret +  "</td> <td> " + ret2 + " </td> <td>" + ret1 +"</td></tr> </table>";
+				}
+				
+				session.setAttribute("transMap", map);*/
+				session.setAttribute("orderTable", order);
 				request.setAttribute("resultStock", resultStock);
+				request.setAttribute("orders", order);
 				request.setAttribute("stocksym", retval);
 				request.setAttribute("username", username);
 				RequestDispatcher rd = getServletContext().getRequestDispatcher("/sell.jsp");

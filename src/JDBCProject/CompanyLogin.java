@@ -1,3 +1,5 @@
+package JDBCProject;
+
 import java.sql.*;
 import java.util.*;
 import java.io.*;
@@ -12,7 +14,7 @@ public class CompanyLogin extends HttpServlet
 	
 	public void init() throws ServletException
 	{
-		String dbURL2 = "jdbc:postgresql://10.42.0.1/cs387";
+		String dbURL2 = "jdbc:postgresql://localhost/cs387";
 		String user = "aman";
 		String pass = "password";
 
@@ -43,7 +45,7 @@ public class CompanyLogin extends HttpServlet
 		{	
 			try
 			{
-				String sql = "select companyID from companies where username = ? and password = ?";
+				String sql = "select companyID from company where username = ? and password = ?";
 				PreparedStatement preparedStatement = conn.prepareStatement(sql);
 				preparedStatement.setString(1, username);
 				preparedStatement.setString(2, password);
@@ -81,9 +83,6 @@ public class CompanyLogin extends HttpServlet
 						}
 						result1= result1.concat("</tbody> </table>");
 						
-						request.setAttribute("companyID", companyID);
-						request.setAttribute("username", username);
-						request.setAttribute("stocks", stocksVector);
 						
 						sql = "select tradedPrice, transDateTime from transactions where stockSymbol = ?";
 						preparedStatement = conn.prepareStatement(sql);
@@ -98,9 +97,13 @@ public class CompanyLogin extends HttpServlet
 							TransRecord temp = new TransRecord(stockSymbol, time, tradedPrice);
 							transVector.addElement(temp);
 						}
+						
+						request.setAttribute("companyID", companyID);
+						request.setAttribute("username", username);
+						request.setAttribute("stocks", stocksVector);
 						request.setAttribute("transactions", transVector);
 						
-						RequestDispatcher rd = getServletContext().getRequestDispatcher("/CompanyHome.jsp");
+						RequestDispatcher rd = getServletContext().getRequestDispatcher("/JDBCProject/CompanyHome.jsp");
 						rd.forward(request, response);
 					}
 					catch (SQLException e) 
@@ -108,7 +111,7 @@ public class CompanyLogin extends HttpServlet
 				}
 				
 				else
-				{	response.sendRedirect("/CompanyLogin.jsp?flag=true");	}
+				{	response.sendRedirect("/JDBCProject/CompanyLogin.jsp?flag=true");	}
 			}
 			catch (SQLException e)
 			{	System.out.println(e.getMessage());	}
@@ -117,25 +120,25 @@ public class CompanyLogin extends HttpServlet
 		{
 			String companyID = request.getParameter("id");
 			String companyName = request.getParameter("name");
-			int phone = Integer.parseInt(request.getParameter("phone"));
+			long  phone = Long.parseLong(request.getParameter("phone"));
 			String email = request.getParameter("email");
 			String address = request.getParameter("address");
 			
 			try
 			{
-				String sql = "insert into company values (?, ?, ?, ?, ?, ?, ?, ?);";
+				String sql = "insert into company values (?, ?, ?, ?, ?, ?, ?);";
 				PreparedStatement preparedStatement = conn.prepareStatement(sql);
 				preparedStatement = conn.prepareStatement(sql);
 				preparedStatement.setString(1, companyID);
 				preparedStatement.setString(2, companyName);
 				preparedStatement.setString(3, username);
 				preparedStatement.setString(4, password);
-				preparedStatement.setInt(5, phone);
+				preparedStatement.setLong(5, phone);
 				preparedStatement.setString(6, address);
 				preparedStatement.setString(7, email);
 				
 				preparedStatement.executeUpdate();
-				response.sendRedirect("/CompanyLogin.jsp?flag=false");
+				response.sendRedirect("/JDBCProject/CompanyLogin.jsp");
 			}
 			catch(SQLException e)
 			{	System.out.println(e.getMessage());	}

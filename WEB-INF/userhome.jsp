@@ -89,6 +89,7 @@
    session.setAttribute("transaction", transactions);
    session.setAttribute("stockOwned", vecObj);
    session.setAttribute( "username", name );
+   String errorMessage = (String) request.getAttribute("error");
 %>
 <div style = "width: 100%;">
 <table class = "table">
@@ -147,7 +148,7 @@
                 <td style = "width: 30%; align: center;">
                  <form action="transaction" method="post">
 					<input type="hidden" name="username" VALUE="<%=name%>">
-					<input type="hidden" name="stock" VALUE="<%= vecObj.get(i).stocksym %>">
+					<input type="hidden" name="stocksym" VALUE=<%=vecObj.get(i).stocksym %>>
 					<input type="hidden" name="type" VALUE="sell" >
 					<input type="submit" class = "btn btn-info" value="sell">		
 				</form>
@@ -194,6 +195,8 @@
 						});
 			});
 </script>
+
+<% if(errorMessage!=null) out.print(errorMessage);%>
 
 </body>
 </html>

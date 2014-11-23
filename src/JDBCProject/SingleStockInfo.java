@@ -1,7 +1,9 @@
+package JDBCProject;
 
-// this one gets the stockInfo of a specific stock according to either
-// stockSymbol or stockName as specified by the user and sends all of the
-// information to a displayStock page
+
+//this one gets the stockInfo of a specific stock according to either
+//stockSymbol or stockName as specified by the user and sends all of the
+//information to a displayStock page
 
 import java.sql.*;
 import java.util.*;
@@ -18,19 +20,19 @@ public class SingleStockInfo extends HttpServlet
 	public void init() throws ServletException
 	{
 		String dbURL2 = "jdbc:postgresql://10.105.1.12/cs387";
-        String user = "db14v051001";
-        String pass = "14v051001";
+     String user = "db14v051001";
+     String pass = "14v051001";
 
-        try
-        {
+     try
+     {
 			Class.forName("org.postgresql.Driver");
 		
 			conn1 = DriverManager.getConnection(dbURL2, user, pass);
 			stockSymbolStatement = conn1.prepareStatement("select * from stocks where ?=?");
 			System.out.println("init"+conn1);
-        }
-        catch (Exception e)
-        {	System.out.println(e);	}
+     }
+     catch (Exception e)
+     {	System.out.println(e);	}
 	}
 
 	public void destroy()
@@ -42,7 +44,7 @@ public class SingleStockInfo extends HttpServlet
 		}
 		catch(Exception e)
 		{	System.out.println(e);	}
-    }
+ }
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws
 	ServletException, IOException
@@ -51,7 +53,7 @@ public class SingleStockInfo extends HttpServlet
 		String value = request.getParameter("value");
 			
 		try
-        {
+     {
 			stockSymbolStatement.setString(1, parameter);
 			stockSymbolStatement.setString(2, value);
 			ResultSet rs = stockSymbolStatement.executeQuery();
@@ -60,7 +62,7 @@ public class SingleStockInfo extends HttpServlet
 			{
 				String stockSymbol = rs.getString(1);
 				String stockName = rs.getString(2);
-				String stockLTP = Double.parseDouble(rs.getString(3));
+				double stockLTP = Double.parseDouble(rs.getString(3));
 				response.sendRedirect(""); // this is where we would forward the information to the display page
 			} 
 			else

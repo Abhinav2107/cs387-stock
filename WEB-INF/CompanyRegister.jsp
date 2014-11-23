@@ -4,57 +4,42 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Company Registration</title>
+        <title>Registration</title>
+        <link rel="stylesheet" type="text/css" href="css/style.css" />
     </head>
     <body>
-        <form method="post" action="CompanyLogin">
-            <center>
-            <table border="1" width="30%" cellpadding="5">
-                <thead>
-                    <tr>
-                        <th colspan="2">Enter Information Here</th>
-                    </tr>
-                </thead>
-                <tbody>
-                	<tr>
-                        <td>Company ID</td>
-                        <td><input type="text" name="id" value="" /></td>
-                    </tr>
-                    <tr>
-                        <td>Company Name</td>
-                        <td><input type="text" name="name" value="" /></td>
-                    </tr>
-                    <tr>
-                        <td>Phone</td>
-                        <td><input type="text" name="phone" value="" /></td>
-                    </tr>
-                    <tr>
-                        <td>Email</td>
-                        <td><input type="email" name="email" /></td>
-                    </tr>
-                    <tr>
-                        <td>Username</td>
-                        <td><input type="text" name="username"/></td>
-                    </tr>
-                    <tr>
-                        <td>Password</td>
-                        <td><input type="password" name="password"  /></td>
-                    </tr>
-                    <tr>
-                        <td>Address</td>
-                        <td><input type="text" name="address"  /></td>
-                    </tr>
-                    <tr>
-                        <td><input type="submit" value="Submit" /></td>
-                        <td><input type="reset" value="Reset" /></td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">Already registered!! <a href="login.jsp">Login Here</a></td>
-                    </tr>
-                </tbody>
-            </table>
-            <input type="hidden" name="type" VALUE="register">
-            </center>
-        </form>
+<div id="wrapper" style="width: 600px;">
+
+    <form name="login-form" class="login-form" action="CompanyLogin" method="post" style="width: 600px;">
+
+        <div class="header">
+        <h2>Company Registration</h2>
+        </div>
+
+        <div class="content">
+        <input name="name" type="text" class="input username" placeholder="Company Name" />
+        <input name="phone" type="text" class="input password" placeholder="Phone" />
+        <input name="email" type="text" class="input password" placeholder="Email" />
+        <input name="username" type="text" class="input password" placeholder="Username" />
+        <input name="password" type="password" class="input password" placeholder="Password" />
+        <input name="address" type="text" class="input password" placeholder="Address" />
+        <!-- <div class="user-icon"></div> -->
+        <!--<input name="balance" type="text" class="input password" placeholder="Balance" />
+        -->
+        <input type="text" name= "id" class="input password" placeholder="Company ID" />
+        <input type="hidden" name="type" value="register" />
+        <!-- <div class="pass-icon"></div> -->
+        </div>
+
+        <div class="footer">
+        <input type="submit" name="submit" value="Register" class="button" />
+        <input type="button" name="register" value="Login" class="register" onclick="location.href = 'CompanyLogin.jsp'"/>
+        </div>
+
+    </form>
+
+</div>
+<div class="gradient"></div>
     </body>
 </html>
+

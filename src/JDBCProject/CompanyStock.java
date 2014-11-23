@@ -1,3 +1,5 @@
+package JDBCProject;
+
 public class CompanyStock
 {
 	public String symbol;

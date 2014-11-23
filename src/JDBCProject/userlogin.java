@@ -190,7 +190,9 @@ public void init() throws ServletException {
 				
 				else
 				{
-					response.sendRedirect("/JDBCProject/login.jsp?flag=" + true);
+					request.setAttribute("flag", "true" );
+					RequestDispatcher rd = getServletContext().getRequestDispatcher("/login.jsp");
+					rd.forward(request, response);
 				}
 			}
 			catch (SQLException e) {

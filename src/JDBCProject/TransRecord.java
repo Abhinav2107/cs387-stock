@@ -1,3 +1,5 @@
+package JDBCProject;
+
 import java.sql.*;
 
 public class TransRecord

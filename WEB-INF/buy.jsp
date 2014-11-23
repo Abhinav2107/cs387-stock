@@ -16,6 +16,7 @@
 	//if(!stock.equals(""))  <%
 	String stocksym = (String) request.getAttribute("stocksym");
 	String stock = (String) request.getAttribute("resultStock");
+	
 	String user= (String) request.getAttribute("username");
 	String errorMessage = (String) request.getAttribute("error");
 	session.setAttribute("stocksym", stocksym);
@@ -40,5 +41,6 @@
 	
 	</center>
 	<% if(errorMessage!=null) out.print(errorMessage);%>
+	<% out.print(session.getAttribute("orderTable")); %>
 </body>
 </html>

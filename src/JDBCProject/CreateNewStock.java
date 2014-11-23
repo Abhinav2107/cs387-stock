@@ -1,6 +1,8 @@
+package JDBCProject;
 
-// this one creates a new stock and adds it to our database. if an
-// error occurs, it says error occurred and asks for new information
+
+//this one creates a new stock and adds it to our database. if an
+//error occurs, it says error occurred and asks for new information
 
 import java.sql.*;
 import java.util.*;
@@ -17,19 +19,19 @@ public class CreateNewStock extends HttpServlet
 	public void init() throws ServletException
 	{
 		String dbURL2 = "jdbc:postgresql://10.105.1.12/cs387";
-        String user = "db14v051001";
-        String pass = "14v051001";
+     String user = "db14v051001";
+     String pass = "14v051001";
 
-        try
-        {
+     try
+     {
 			Class.forName("org.postgresql.Driver");
 		
 			conn1 = DriverManager.getConnection(dbURL2, user, pass);
 			newStock = conn1.prepareStatement("insert into stocks values(?,?,?,0);");
 			System.out.println("init"+conn1);
-        }
-        catch (Exception e)
-        {	System.out.println(e);	}
+     }
+     catch (Exception e)
+     {	System.out.println(e);	}
 	}
 
 	public void destroy()
@@ -41,7 +43,7 @@ public class CreateNewStock extends HttpServlet
 		}
 		catch(Exception e)
 		{	System.out.println(e);	}
-    }
+ }
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws
 	ServletException, IOException
@@ -51,7 +53,7 @@ public class CreateNewStock extends HttpServlet
 		double stockPrice = Double.parseDouble(request.getParameter("stockPrice"));
 			
 		try
-        {
+     {
 			newStock.setString(1, stockSymbol);
 			newStock.setString(2, stockName);
 			newStock.setDouble(3, stockPrice);
