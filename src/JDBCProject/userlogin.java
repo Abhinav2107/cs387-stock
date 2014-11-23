@@ -114,7 +114,7 @@ public void init() throws ServletException {
 				        int retval2;
 				        float retval3; 
 				       String result1= "<table>" + " <thead>" +
-				       		"<tr>" + " <h3>Shares Owned</h3>  </tr> </thead> <tbody> ";
+				       		"<tr>" + " <h3>Search Results</h3>  </tr> </thead> <tbody> ";
 				        
 						while(rs.next())
 						{
@@ -208,12 +208,12 @@ public void init() throws ServletException {
 			String username = (String) session.getAttribute("username");
 			Vector<stocks> v = (Vector<stocks>)request.getAttribute("vec");
 			//System.out.println("here" + v.get(0).stocksym + " " + v.get(0).quant);
-			sql = "select * from stocks where stockSymbol = ?";
+			sql = "select * from stocks where stockSymbol like ?";
 			String result2= "<table>" + " <thead>" +
-       		"<tr>" + " <h3>Shares Owned</h3>  </tr> </thead> <tbody> ";
+       		"<tr>" + " <h3>Search Results</h3>  </tr> </thead> <tbody> ";
 			try{
 				preparedStatement = conn1.prepareStatement(sql);
-				preparedStatement.setString(1, str);
+				preparedStatement.setString(1, "%"+str+"%");
 				rs = preparedStatement.executeQuery();
 		        String retval = "";
 		        String retval1 = "";
@@ -227,7 +227,7 @@ public void init() throws ServletException {
                     		//+ "<td>" + retval + "</td>"
                     		+ "<td>" + retval1 + "</td>"
                     		+ "<td>" + Integer.toString(retval2) + "</td>"
-                    		+ "<td> <input id = \"buyButton\" type=\"button\" ONCLICK=\"location.href = 'transaction?type=buy&stocksym="+str+"'\" "						+" } " 
+                    		+ "<td> <input id = \"buyButton\" type=\"button\" ONCLICK=\"location.href = 'transaction?type=buy&stocksym="+retval+"'\" "						+" } " 
 							+ "value=\"buy\"> </td>"
                     		+ "</tr>");
 				}
