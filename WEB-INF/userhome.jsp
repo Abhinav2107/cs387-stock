@@ -130,7 +130,7 @@
 </table>
 </div>
     <div id = "wrapper" style = "width:100%;">
-    <table class = "table">
+    <table class = "table table-hover">
     <tr>
     <td style = "width:33%;">
     <div id = "owned" style = "width:95%; height: 100%; min-height: 600px; text-align: center; margin-right: 10px; background-color: #eaeaea; float:left; position: relative;">			
@@ -201,8 +201,8 @@
 						function(data, status)
 						{
 							$("#searchRes").html(data);
-                            $("#buyButton").addClass("btn");
-                            $("#buyButton").addClass("btn-info");
+                            $("#searchRes input").addClass("btn");
+                            $("#searchRes input").addClass("btn-info");
 						});
 			});
 </script>
