@@ -114,7 +114,7 @@ public void init() throws ServletException {
 				        int retval2;
 				        float retval3; 
 				       String result1= "<table>" + " <thead>" +
-				       		"<tr>" + " <h3>Search Results</h3>  </tr> </thead> <tbody> ";
+				       		" </thead> <tbody> ";
 				        
 						while(rs.next())
 						{
@@ -211,8 +211,7 @@ public void init() throws ServletException {
 			Vector<stocks> v = (Vector<stocks>)request.getAttribute("vec");
 			//System.out.println("here" + v.get(0).stocksym + " " + v.get(0).quant);
 			sql = "select * from stocks where stockSymbol like ?";
-			String result2= "<table>" + " <thead>" +
-       		"<tr>" + " <h3>Search Results</h3>  </tr> </thead> <tbody> ";
+			String result2= "<table>  <tbody> ";
 			try{
 				preparedStatement = conn1.prepareStatement(sql);
 				preparedStatement.setString(1, "%"+str+"%");

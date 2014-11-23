@@ -12,8 +12,18 @@
     <link href="css/style.css" rel="stylesheet" media="screen">
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
+    <style>
+            #header {
+    background-color:#49afcd;
+    color:white;
+    text-align:left;
+    padding:5px; 
+    </style>
 </head>
 <body>
+<div id = "header">
+<center> <img src="images/logo.png" alt="logo" height="400" width="400"> </center>
+</div>
 <div id="wrapper">
 
     <form name="login-form" class="login-form" action="userlogin" method="post">

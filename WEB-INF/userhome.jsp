@@ -16,6 +16,12 @@
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
         <style>
+        
+        #header {
+    background-color:#49afcd;
+    color:white;
+    text-align:left;
+    padding:5px;
 
 @import url(http://fonts.googleapis.com/css?family=Bree+Serif);
 
@@ -82,6 +88,11 @@
     </head>
 
 <body>
+
+<div id = "header">
+<img src="images/logo.png" alt="logo" height="300" width="300">
+</div>
+
 <%
 	Vector<stocks> vecObj = (Vector<stocks>) request.getAttribute("vec");
    String name = request.getParameter( "username" );

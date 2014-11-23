@@ -43,6 +43,7 @@ public class CompanyLogin extends HttpServlet
 		
 		if(type.equals("login"))
 		{	
+			System.out.println("Reached Login Stage...");
 			try
 			{
 				String sql = "select companyID from company where username = ? and password = ?";
@@ -84,7 +85,7 @@ public class CompanyLogin extends HttpServlet
 						result1= result1.concat("</tbody> </table>");
 						
 						
-						sql = "select tradedPrice, transDateTime from transactions where stockSymbol = ?";
+						sql = "select tradedPrice, transDateTime from transactions where stockSymbol = ? order by transdatetime asc;";
 						preparedStatement = conn.prepareStatement(sql);
 						preparedStatement.setString(1, stockSymbol);
 						rs = preparedStatement.executeQuery();
@@ -98,12 +99,12 @@ public class CompanyLogin extends HttpServlet
 							transVector.addElement(temp);
 						}
 						
-						request.setAttribute("companyID", companyID);
-						request.setAttribute("username", username);
-						request.setAttribute("stocks", stocksVector);
-						request.setAttribute("transactions", transVector);
-						
-						RequestDispatcher rd = getServletContext().getRequestDispatcher("/JDBCProject/CompanyHome.jsp");
+						HttpSession session = request.getSession(true);
+						session.setAttribute("companyID", companyID);
+						session.setAttribute("username", username);
+						session.setAttribute("stocks", stocksVector);
+						session.setAttribute("transactions", transVector);
+						RequestDispatcher rd = getServletContext().getRequestDispatcher("/CompanyHome.jsp");
 						rd.forward(request, response);
 					}
 					catch (SQLException e) 
@@ -119,6 +120,7 @@ public class CompanyLogin extends HttpServlet
 		else if(type.equals("register"))
 		{
 			String companyID = request.getParameter("id");
+			String stockSymbol = request.getParameter("symbol");
 			String companyName = request.getParameter("name");
 			long  phone = Long.parseLong(request.getParameter("phone"));
 			String email = request.getParameter("email");
@@ -126,7 +128,7 @@ public class CompanyLogin extends HttpServlet
 			
 			try
 			{
-				String sql = "insert into company values (?, ?, ?, ?, ?, ?, ?);";
+				String sql = "insert into company values (?, ?, ?, ?, ?, ?, ?, ?);";
 				PreparedStatement preparedStatement = conn.prepareStatement(sql);
 				preparedStatement = conn.prepareStatement(sql);
 				preparedStatement.setString(1, companyID);
@@ -136,8 +138,18 @@ public class CompanyLogin extends HttpServlet
 				preparedStatement.setLong(5, phone);
 				preparedStatement.setString(6, address);
 				preparedStatement.setString(7, email);
-				
+				preparedStatement.setString(8, stockSymbol);
 				preparedStatement.executeUpdate();
+				
+				sql = "insert into stocks values (?,?,?,?,?);";
+				preparedStatement = conn.prepareStatement(sql);
+				preparedStatement.setString(1, stockSymbol);
+				preparedStatement.setString(2, companyName);
+				preparedStatement.setString(3, password);
+				preparedStatement.setFloat(4, 0);
+				preparedStatement.setString(5, companyID);
+				preparedStatement.executeUpdate();
+				
 				response.sendRedirect("/JDBCProject/CompanyLogin.jsp");
 			}
 			catch(SQLException e)

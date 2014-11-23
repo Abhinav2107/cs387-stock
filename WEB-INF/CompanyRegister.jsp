@@ -18,6 +18,7 @@
 
         <div class="content">
         <input name="name" type="text" class="input username" placeholder="Company Name" />
+        <input name="symbol" type="text" class="input symbol" placeholder="Stock Symbol" />
         <input name="phone" type="text" class="input password" placeholder="Phone" />
         <input name="email" type="text" class="input password" placeholder="Email" />
         <input name="username" type="text" class="input password" placeholder="Username" />

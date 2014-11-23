@@ -3,11 +3,13 @@
 <%@ page import="JDBCProject.CompanyStock" %>
 <%@ page import="JDBCProject.TransRecord" %>
 <%
-	Vector<CompanyStock> stockVector = (Vector<CompanyStock>) request.getAttribute("stocks");
-	Vector<TransRecord> transVector = (Vector<TransRecord>) request.getAttribute("transactions");
-	String username = request.getParameter("username");
-	session.setAttribute("name", username);
+	Vector<CompanyStock> stockVector = (Vector<CompanyStock>) session.getAttribute("stocks");
+	Vector<TransRecord> transVector = (Vector<TransRecord>) session.getAttribute("transactions");
+	String username = (String)session.getAttribute("username");
+	String errorMessage = (String) request.getAttribute("error");
+	
 %>
+<center>
  <h2> Welcome <%=username%> </h2>
 <%
 	if(stockVector!= null)
@@ -29,7 +31,7 @@
                        <td>Last Traded Price</td>
                    </tr>
                    <tr>
-                       <td><%=symbol%></td>
+                       <td><% session.setAttribute("stocksym",symbol); out.println(symbol);%></td>
                        <td><%=ltp%></td>
                    </tr>
 			</tbody>
@@ -70,7 +72,22 @@
 			<%	
 		}
 	}
-%>
+	else
+	{
+		 %>
+         <tr>
+             <td>No transactions yet...</td>
+         </tr>
+	<%
+	}
 
+%>
 			</tbody>
 		</table>
+		<form name="login-form" class="login-form" action="PayDividends" method="post">
+		 <input type="text" name="amount" class="input username" placeholder="amount" />
+		 <input type="submit" name="payDividends" value="Pay" class="register" />
+		 </form>
+		 
+		 <% if(errorMessage!=null) out.print(errorMessage);%>
+		</center>
