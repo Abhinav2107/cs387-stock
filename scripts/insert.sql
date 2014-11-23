@@ -24,6 +24,10 @@ insert into ownership values ('bharat', 'yahoo', '5', '15');
 
 insert into sellOrders values('googl', 'aman', '30','1');
 insert into sellOrders values('yahoo', 'ainesh', '25', '3');
+insert into sellOrders values('googl', 'abhinav', '30','5');
+insert into sellOrders values('googl', 'bharat', '35', '2');
+
+insert into buyOrders values();
 
 insert into transactions values('googl', '29.00', '1', 'aman', 'abhinav', '2014-11-22 01:38:43.25');
 insert into transactions values('googl', '29.00', '1', 'aman', 'ainesh', '2014-11-22 01:41:18.8');
