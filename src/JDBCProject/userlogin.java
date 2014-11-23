@@ -97,7 +97,7 @@ public void init() throws ServletException {
 				status=rs.next();
 				System.out.println(username);
 				System.out.println(password);
-				System.out.println(status);
+				System.out.println("here" + status);
 				 
 				if(status)
 				{ // once you are logged in you can send the data related to all the stocks owned
@@ -158,7 +158,6 @@ public void init() throws ServletException {
 			                    String ret5 = rs.getString(6);
 			                    
 			                    result2 = result2.concat("<tr>"
-			                    		//+ "<td>" + retval + "</td>"
 			                    		+ "<td>" + ret + "</td>"
 			                    		+ "<td>" + Integer.toString(ret2) + "</td>"
 			                    		+ "<td>" + Float.toString(ret1) + "</td>"
@@ -210,25 +209,23 @@ public void init() throws ServletException {
 			String username = (String) session.getAttribute("username");
 			Vector<stocks> v = (Vector<stocks>)request.getAttribute("vec");
 			//System.out.println("here" + v.get(0).stocksym + " " + v.get(0).quant);
-			sql = "select * from stocks where stockSymbol like ?";
+			sql = "select stockSymbol, ltp from stocks where stockSymbol like ?";
 			String result2= "<table>  <tbody> ";
 			try{
 				preparedStatement = conn1.prepareStatement(sql);
 				preparedStatement.setString(1, "%"+str+"%");
 				rs = preparedStatement.executeQuery();
-		        String retval = "";
 		        String retval1 = "";
-		        int retval2;
+		        float retval2;
 				while(rs.next())
 				{
-                    retval = rs.getString(1);
-                    retval1 = rs.getString(2);
-                    retval2 = rs.getInt(4); 
+                    retval1 = rs.getString(1);
+                    retval2 = rs.getFloat(2); 
                     result2 = result2.concat("<tr>"
                     		//+ "<td>" + retval + "</td>"
                     		+ "<td>" + retval1 + "</td>"
-                    		+ "<td>" + Integer.toString(retval2) + "</td>"
-                    		+ "<td> <input id = \"buyButton\" type=\"button\" ONCLICK=\"location.href = 'transaction?type=buy&stocksym="+retval+"'\" "						+" } " 
+                    		+ "<td>" + retval2 + "</td>"
+                    		+ "<td> <input id = \"buyButton\" type=\"button\" ONCLICK=\"location.href = 'transaction?type=buy&stocksym="+retval1+"'\" "						+" } " 
 							+ "value=\"buy\"> </td>"
                     		+ "</tr>");
 				}
@@ -247,10 +244,11 @@ public void init() throws ServletException {
         
 		else if(type.equals("register"))
 		{
+			System.out.println("I am in register");
 			String username=request.getParameter("username");
 			String password=request.getParameter("password");
 			String name = request.getParameter("name");
-			double phone = Integer.parseInt(request.getParameter("phone"));
+			long phone = Long.parseLong(request.getParameter("phone"));
 			//int phone = 0047363512;
 			String email = request.getParameter("email");
 			double bal = Float.parseFloat(request.getParameter("balance"));
@@ -262,14 +260,14 @@ public void init() throws ServletException {
 			try{
 				preparedStatement = conn1.prepareStatement(sql);
 				preparedStatement.setString(3, name);
-				preparedStatement.setDouble(5, phone);
+				preparedStatement.setLong(5, phone);
 				preparedStatement.setString(4, email);
 				preparedStatement.setString(1, username);
 				preparedStatement.setString(2, password);
 				preparedStatement.setString(6, address);
 				preparedStatement.setDouble(7, bal);
-				
 				preparedStatement.executeUpdate();
+				
 				response.sendRedirect("/JDBCProject/login.jsp?flag="+ false);
 
 			}

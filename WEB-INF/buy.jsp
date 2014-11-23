@@ -139,7 +139,13 @@ google.load("visualization", "1", {packages:["corechart"]});
 </td>
 <td>	
 	<% if(errorMessage!=null) out.print(errorMessage);%>
-	<% out.print(session.getAttribute("orderTable")); %>
+		<table>
+	<tr>
+	<td><% out.print(session.getAttribute("buyOrderTable")); %></td>
+	<td>    </td>
+	<td><% out.print(session.getAttribute("sellOrderTable")); %></td>
+	</tr>
+	</table>
 </td>
 </tr>
 </table>

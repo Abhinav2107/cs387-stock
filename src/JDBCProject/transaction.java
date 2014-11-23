@@ -31,6 +31,7 @@ import java.util.Vector;
 public class transaction extends HttpServlet {
 	Connection conn1 =null;
 	Statement st =null;
+	String errorOccured = "";
 	PreparedStatement preparedStatement = null;
 
 
@@ -167,8 +168,8 @@ public class transaction extends HttpServlet {
 			while(rs.next())
 			{
 				float am = rs.getFloat(1);
-				if(am-addend >= 0) {rs.updateFloat(1, (float) (am - addend)); rs.updateRow(); conn1.commit(); }
-				else conn1.rollback();
+				if(am-addend >= 0) {rs.updateFloat(1, (float) (am - addend)); rs.updateRow(); conn1.commit(); errorOccured = "Not Enough Money";}
+				else {conn1.rollback(); System.out.println("rolling back"); errorOccured = "stock(s) bought";}
 
 			}
 		}
@@ -317,7 +318,7 @@ public class transaction extends HttpServlet {
 				//System.out.println("stock details" + resultStock);
 				
 				sql= "select stocksymbol, askPrice, quantity from sellOrders where stockSymbol = ?";
-				String order="";
+				String orderSell="";
 				preparedStatement = conn1.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
 				preparedStatement.setString(1, stocksym);
 				rs = preparedStatement.executeQuery();
@@ -329,15 +330,55 @@ public class transaction extends HttpServlet {
 					float ret1 = rs.getFloat(2);
 					int ret2 = rs.getInt(3);
 
-					order = "<h1> Order Table </h1> <table class=\"table\" border=\"1\"  > <thead> <tr> <td> Share </td> <td> Quantity </td> <td> Ask Price </td></tr> " +
+					orderSell = "<h2> Sell Order Table </h2> <table class=\"table\" border=\"1\"  > <thead> <tr> <td> Share </td> <td> Quantity </td> <td> Ask Price </td></tr> " +
 					"</thead><tr> <td>" +  ret +  "</td> <td> " + ret2 + " </td> <td>" + ret1 +"</td></tr> </table>";
 				}
+				session.setAttribute("sellOrderTable", orderSell);
 				
-				session.setAttribute("orderTable", order);
+				sql= "select stocksymbol, bidPrice, quantity from buyOrders where stockSymbol = ?";
+				String orderBuy="<h2> Buy Order Table </h2> <table class=\"table\" border=\"1\"  > <thead> <tr> <td> Share </td> <td> Quantity </td> <td> Bid Price </td></tr> " +
+				"</thead>";
+				preparedStatement = conn1.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
+				preparedStatement.setString(1, stocksym);
+				rs = preparedStatement.executeQuery();
+				
+				
+				while(rs.next())
+				{
+					String ret = rs.getString(1);
+					float ret1 = rs.getFloat(2);
+					int ret2 = rs.getInt(3);
+
+					orderBuy += "<tr> <td>" +  ret +  "</td> <td> " + ret2 + " </td> <td>" + ret1 +"</td></tr>";
+				}
+				orderBuy+= "</table>";
+				session.setAttribute("buyOrderTable", orderBuy);
+				
 				System.out.println("buytag " + username + " " + stocksym);
 				request.setAttribute("resultStock", resultStock);
 				request.setAttribute("stocksym", retval);
 				request.setAttribute("username", username);
+				
+				sql= "select tradedPrice, transdatetime from transactions where stockSymbol = ? order by transdatetime asc;";
+				preparedStatement = conn1.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
+				preparedStatement.setString(1, stocksym);
+				rs = preparedStatement.executeQuery();
+				
+				Vector<TransRecord> transVector = new Vector<TransRecord>();
+				while(rs.next())
+				{
+					float tradedPrice = Float.parseFloat(rs.getString(1));
+					String transDateTime = rs.getString(2);
+					TransRecord temp = new TransRecord(stocksym, transDateTime, tradedPrice);
+					
+					transVector.addElement(temp);
+					//order = "<h1> Order Table </h1> <table class=\"table\" border=\"1\"  > <thead> <tr> <td> Share </td> <td> Quantity </td> <td> Ask Price </td></tr> " +
+					//"</thead><tr> <td>" +  ret +  "</td> <td> " + ret2 + " </td> <td>" + ret1 +"</td></tr> </table>";
+				}
+				
+				session.setAttribute("transactions", transVector);
+				
+				
 				RequestDispatcher rd = getServletContext().getRequestDispatcher("/buy.jsp");
 				rd.forward(request, response);
 			}catch (SQLException e) 
@@ -384,21 +425,35 @@ public class transaction extends HttpServlet {
 				}
 				
 				sql= "select stocksymbol, askPrice, quantity from sellOrders where stockSymbol = ?";
-				String order="";
+				String orderSell= "<h2> Sell Order Table </h2> <table class=\"table\" border=\"1\"  > <thead> <tr> <td> Share </td> <td> Quantity </td> <td> Ask Price </td></tr> " +
+				"</thead>";
 				preparedStatement = conn1.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
 				preparedStatement.setString(1, stocksym);
 				rs = preparedStatement.executeQuery();
-				
-				
 				while(rs.next())
 				{
 					String ret = rs.getString(1);
 					float ret1 = rs.getFloat(2);
 					int ret2 = rs.getInt(3);
 
-					order = "<h1> Order Table </h1> <table class=\"table\" border=\"1\"  > <thead> <tr> <td> Share </td> <td> Quantity </td> <td> Ask Price </td></tr> " +
-					"</thead><tr> <td>" +  ret +  "</td> <td> " + ret2 + " </td> <td>" + ret1 +"</td></tr> </table>";
+					orderSell +="<tr> <td>" +  ret +  "</td> <td> " + ret2 + " </td> <td>" + ret1 +"</td></tr>";
 				}
+				orderSell +=  "</table>";
+				
+				sql= "select stocksymbol, bidPrice, quantity from buyOrders where stockSymbol = ?";
+				String orderBuy="<h2> Buy Order Table </h2><table BORDER=\"1\" > <thead> <tr> <td> Share </td> <td> Quantity </td> <td> Bid Price </td></tr> </thead>";
+				preparedStatement = conn1.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
+				preparedStatement.setString(1, stocksym);
+				rs = preparedStatement.executeQuery();
+				while(rs.next())
+				{
+					String ret = rs.getString(1);
+					float ret1 = rs.getFloat(2);
+					int ret2 = rs.getInt(3);
+
+					orderBuy += "<tr> <td>" +  ret +  "</td> <td> " + ret2 + " </td> <td>" + ret1 +"</td></tr>";
+				}
+				orderBuy += "</table>";
 				
 				sql= "select tradedPrice, transdatetime from transactions where stockSymbol = ? order by transdatetime asc;";
 				preparedStatement = conn1.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
@@ -420,9 +475,9 @@ public class transaction extends HttpServlet {
 				session.setAttribute("transactions", transVector);
 				
 				
-				session.setAttribute("orders", order);
+				session.setAttribute("sellOrderTable", orderSell);
+				session.setAttribute("buyOrderTable", orderBuy);
 				request.setAttribute("resultStock", resultStock);
-				request.setAttribute("orders", order);
 				request.setAttribute("stocksym", retval);
 				request.setAttribute("username", username);
 				RequestDispatcher rd = getServletContext().getRequestDispatcher("/sell.jsp");
@@ -736,15 +791,10 @@ public class transaction extends HttpServlet {
 					updateLtp(stocksym, ltp);
 
 					//ADD MONEY TO ACCOUNT
-
-					redeemMoney(username, amount_due);
-					//Update ownership 
-
 					updateBuyerOwnership(username, stocksym, quant_bought, ltp, 1);
+					redeemMoney(username, amount_due);
 
-					conn1.commit();
-
-					request.setAttribute("error", quant_bought +" stocks bought");
+					request.setAttribute("error", errorOccured);
 					request.setAttribute("resultStock", stock);
 					request.setAttribute("stocksym", retval);
 					request.setAttribute("username", username);

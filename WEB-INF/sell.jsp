@@ -80,7 +80,13 @@
 			</tbody>
 		</table>
 	<p>
-	<% out.print(session.getAttribute("orders")); %>
+		<table>
+	<tr>
+	<td><% out.print(session.getAttribute("buyOrderTable")); %></td>
+	<td>    </td>
+	<td><% out.print(session.getAttribute("sellOrderTable")); %></td>
+	</tr>
+	</table>
 	
 	</center>
 	<% if(errorMessage!=null) out.print(errorMessage);%>

@@ -42,19 +42,29 @@ public class CompanyLogin extends HttpServlet
 		String password = request.getParameter("password");
 		
 		if(type.equals("login"))
-		{	
-			System.out.println("Reached Login Stage...");
+		{
 			try
 			{
-				String sql = "select companyID from company where username = ? and password = ?";
+				String sql = "select companyID, companyName, stocksymbol from company where username = ? and password = ?";
 				PreparedStatement preparedStatement = conn.prepareStatement(sql);
 				preparedStatement.setString(1, username);
 				preparedStatement.setString(2, password);
 				
+				HttpSession session = request.getSession(true);
 				String companyID = null;
+				String companyName = null;
+				String stockSymbol = null;
 				ResultSet rs = preparedStatement.executeQuery();
 				if(rs.next())
-				{	companyID = rs.getString(1);	}
+				{
+					companyID = rs.getString(1);
+					companyName = rs.getString(2);
+					stockSymbol = rs.getString(3);
+					session.setAttribute("companyID", companyID);
+					session.setAttribute("username", username);
+					session.setAttribute("symbol", stockSymbol);
+					session.setAttribute("name", companyName);
+				}
 				 
 				if(companyID!=null)
 				{
@@ -66,7 +76,7 @@ public class CompanyLogin extends HttpServlet
 						preparedStatement = conn.prepareStatement(sql);
 						preparedStatement.setString(1, companyID);
 						rs = preparedStatement.executeQuery();
-						String stockSymbol = null;
+						stockSymbol = null;
 						
 						String result1= "<table> <thead> <tr> <h3>Company Shares</h3> </tr> </thead> <tbody> ";
 						while(rs.next())
@@ -99,11 +109,9 @@ public class CompanyLogin extends HttpServlet
 							transVector.addElement(temp);
 						}
 						
-						HttpSession session = request.getSession(true);
-						session.setAttribute("companyID", companyID);
-						session.setAttribute("username", username);
 						session.setAttribute("stocks", stocksVector);
 						session.setAttribute("transactions", transVector);
+						
 						RequestDispatcher rd = getServletContext().getRequestDispatcher("/CompanyHome.jsp");
 						rd.forward(request, response);
 					}
@@ -139,15 +147,6 @@ public class CompanyLogin extends HttpServlet
 				preparedStatement.setString(6, address);
 				preparedStatement.setString(7, email);
 				preparedStatement.setString(8, stockSymbol);
-				preparedStatement.executeUpdate();
-				
-				sql = "insert into stocks values (?,?,?,?,?);";
-				preparedStatement = conn.prepareStatement(sql);
-				preparedStatement.setString(1, stockSymbol);
-				preparedStatement.setString(2, companyName);
-				preparedStatement.setString(3, password);
-				preparedStatement.setFloat(4, 0);
-				preparedStatement.setString(5, companyID);
 				preparedStatement.executeUpdate();
 				
 				response.sendRedirect("/JDBCProject/CompanyLogin.jsp");
