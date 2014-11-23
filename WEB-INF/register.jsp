@@ -5,8 +5,40 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Registration</title>
+        <link rel="stylesheet" type="text/css" href="css/style.css" />
     </head>
     <body>
+<div id="wrapper" style="width: 600px;">
+
+    <form name="login-form" class="login-form" action="userlogin" method="post" style="width: 600px;">
+
+        <div class="header">
+        <h2>User Registration</h2>
+        </div>
+
+        <div class="content">
+        <input name="name" type="text" class="input username" placeholder="Name" />
+        <input name="phone" type="text" class="input password" placeholder="Phone" />
+        <input name="email" type="text" class="input password" placeholder="Email" />
+        <input name="username" type="text" class="input password" placeholder="Username" />
+        <input name="password" type="password" class="input password" placeholder="Password" />
+        <input name="address" type="text" class="input password" placeholder="Address" />
+        <!-- <div class="user-icon"></div> -->
+        <input name="balance" type="text" class="input password" placeholder="Balance" />
+        <input type="hidden" name="type" value="login" />
+        <!-- <div class="pass-icon"></div> -->
+        </div>
+
+        <div class="footer">
+        <input type="submit" name="submit" value="Register" class="button" />
+        <input type="button" name="register" value="Login" class="register" onclick="location.href = 'login.jsp'"/>
+        </div>
+
+    </form>
+
+</div>
+<div class="gradient"></div>
+<!--
         <form method="post" action="userlogin">
             <center>
             <table border="1" width="30%" cellpadding="5">
@@ -55,6 +87,7 @@
             </table>
             <input type="hidden" name="type" VALUE="register">
             </center>
-        </form>
+        </form>-->
     </body>
 </html>
+
