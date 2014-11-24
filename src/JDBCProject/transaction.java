@@ -501,7 +501,7 @@ public class transaction extends HttpServlet {
 
 			if(!isGreater)
 			{
-				request.setAttribute("error", "<center> Insufficient amount of stocks to be sold </center> ");
+				request.setAttribute("error", "<center> <h3> Status Message </h3> <br> Insufficient amount of stocks to be sold </center> ");
 				request.setAttribute("resultStock", stock);
 				RequestDispatcher rd = getServletContext().getRequestDispatcher("/sell.jsp");
 				rd.forward(request, response);
@@ -572,7 +572,7 @@ public class transaction extends HttpServlet {
 
 					conn1.commit();
 					conn1.setAutoCommit(true);
-					request.setAttribute("error", quant_sold +" stocks sold");
+					request.setAttribute("error", "<center> <h3> Status Message </h3> <br>"+quant_sold +" stocks sold </center>");
 					request.setAttribute("resultStock", traderesult);
 					request.setAttribute("stocksym", retval);
 					request.setAttribute("username", username);
@@ -605,7 +605,7 @@ public class transaction extends HttpServlet {
 
 			if(!isGreater)
 			{
-				request.setAttribute("error", "Insufficient amount");
+				request.setAttribute("error", "<h3> Status Message </h3> <br> Don't have sufficient amount of stocks for this trade");
 				request.setAttribute("resultStock", stock);
 				RequestDispatcher rd = getServletContext().getRequestDispatcher("/sell.jsp");
 				rd.forward(request, response);
@@ -693,7 +693,7 @@ public class transaction extends HttpServlet {
 
 					conn1.commit();
 					conn1.setAutoCommit(true);
-					request.setAttribute("error", "<center> Order placed </center>");
+					request.setAttribute("error", "<center> <h3> Status Message </h3> <br>  Order Placed </center>");
 					request.setAttribute("resultStock", stock);
 					request.setAttribute("stocksym", retval);
 					request.setAttribute("username", username);
@@ -730,7 +730,7 @@ public class transaction extends HttpServlet {
 
 			if(!isGreater)
 			{
-				request.setAttribute("error", "Insufficient amount");
+				request.setAttribute("error", "<center> <h3> Status Message </h3> <br>" + "Don't have enought stocks for this order" + "</center>");
 				request.setAttribute("resultStock", stock);
 				RequestDispatcher rd = getServletContext().getRequestDispatcher("/buy.jsp");
 				rd.forward(request, response);
@@ -796,7 +796,7 @@ public class transaction extends HttpServlet {
 					updateBuyerOwnership(username, stocksym, quant_bought, ltp, 1);
 					redeemMoney(username, amount_due);
 					conn1.setAutoCommit(true);
-					request.setAttribute("error", errorOccured);
+					request.setAttribute("error", "<center> <h3> Status Message </h3> <br>" + errorOccured + "</center>");
 					request.setAttribute("resultStock", stock);
 					request.setAttribute("stocksym", retval);
 					request.setAttribute("username", username);
@@ -915,7 +915,7 @@ public class transaction extends HttpServlet {
 				redeemMoney(username, quant*bidPrice);
 				
 				conn1.setAutoCommit(true);
-				request.setAttribute("error", errorOccured);
+				request.setAttribute("error", "<center> <h3> Status Message </h3> <br>" + errorOccured + "</center>");
 				request.setAttribute("resultStock", stock);
 				request.setAttribute("stocksym", retval);
 				request.setAttribute("username", username);

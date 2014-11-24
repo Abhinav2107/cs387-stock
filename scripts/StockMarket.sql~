@@ -14,7 +14,7 @@ create table company
 	phone numeric(10), 
 	address varchar(50), 
 	email varchar(50), 
-	stocksymbol char(5),
+	stocksymbol char(5)
 );
 
 create table users
@@ -71,6 +71,7 @@ create table buyOrders
 );
 
 ALTER TABLE buyOrders ADD COLUMN id serial PRIMARY KEY;
+alter table buyOrders alter buyDateTime set default now();
 
 CREATE INDEX sort_buy
 ON buyOrders (bidPrice, buyDateTime);

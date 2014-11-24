@@ -73,8 +73,6 @@ public class LaunchIPO extends HttpServlet
 			preparedStatement.setTimestamp(5, getCurrentTimeStamp());
 			preparedStatement.executeUpdate();
 			
-			sql = "insert into sellOrders values(?,?,?,?)";
-			
 			request.setAttribute("error", "IPO Launched");			
 			RequestDispatcher rd = getServletContext().getRequestDispatcher("/CompanyHome.jsp");
 			rd.forward(request, response);

@@ -1,0 +1,18 @@
+user puts a sell market order with quantity q
+
+1. Check if user has that quantity q
+
+2. If there is enough quantity available for trade then use all the buy orders to make quantity equal to q
+
+3. reduce the total number of stocks that the user was able to sell 
+and add the total amount of money to his account
+
+//4. remaining stocks are to be added to the sell ORder table and the price is put to the price of either the LTP or minimum price
+
+5. Also update the last traded price of this stock 
+6. Add this stock transaction to the transaction table
+7. Also update the ownership table
+
+
+Whenever the buy order is placed the amount is deducted from account and will only be placed if that amount is there is 
+the account ow it will be rejected

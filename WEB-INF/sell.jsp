@@ -97,7 +97,7 @@ google.load("visualization", "1", {packages:["corechart"]});
 <td>	
 	<form action="transaction" method="post">
 		<button type="submit" name="type" style = "padding-bottom: 10px;" class = "btn btn-primary" VALUE="selllimitorder" >Limit Order</button>
-		<input id="textfield" name="bidPrice" style = "padding-top: 5px;" class = "input" type="text" placeholder="bid price">
+		<input id="textfield" name="askPrice" style = "padding-top: 5px;" class = "input" type="text" placeholder="ask price">
 		<input id="textfield" name="limitquant" style = "padding-top: 5px;" class = "input" type="text" placeholder="quantity">
 		
 	</form>
