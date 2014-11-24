@@ -36,7 +36,7 @@
     </head>
 
 <body>
-<table class = "table table-bordered" style = "width: 100%; margin: 0 auto;">  
+<table style = "width: 100%; margin: 0 auto;">  
 <tr>
 <td colspan = "2">
 <div id = "header">
@@ -53,16 +53,20 @@
 </td>
 </tr>
 <tr>
-<td width = "50%">
-<h1>Random Ass Quote</h1>
+<td width = "50%" style = "text-align: center;">
+<br />
+<img src = "images/quote.jpg" style = "height: 200px; width: 600px;">
+<br />
 </td>
 <td width = "50%" style = "text-align: center;">
+<br />
 <br />
 <input type = "button" class = "btn btn-large btn-primary" value = "User Login" onClick = "location.href = 'login.jsp';">
 <br />
 <br />
 <br />
 <input type = "button" class = "btn btn-large btn-primary" value = "Company Login" onClick = "location.href = 'CompanyLogin.jsp';">
+<br />
 <br />
 </td>
 </tr>
@@ -71,15 +75,20 @@
 <table id = "team" style = "width: 100%; margin: 0 auto;">
 <tr>
 <td colspan = "3">
-<center>Team Members</center>
+<br />
+<center><h2>Team Members</h2></center>
+<br />
 </td>
 </tr>
 <tr>
 <td>
+<img src = "images/abhinav.jpg" style = "height: 100px; width: 100px;">
 </td>
 <td>
+<img src = "images/aman.jpg" style = "height: 100px; width: 100px;">
 </td>
 <td>
+<img src = "images/ainesh.jpg" style = "height: 100px; width: 100px;">
 </td>
 </tr>
 <tr>
