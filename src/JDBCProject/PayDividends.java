@@ -25,7 +25,6 @@ public class PayDividends extends HttpServlet
 			Class.forName("org.postgresql.Driver");
 
 			conn = DriverManager.getConnection(dbURL2, user, pass);
-			conn.setAutoCommit(false);
 			//st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
 			System.out.println("init"+conn);
 		} catch (Exception e) {
@@ -52,6 +51,7 @@ public class PayDividends extends HttpServlet
 		System.out.println(stocksym + " " + amount);
 		try
 		{
+			conn.setAutoCommit(false);
 			//System.out.println(stocksym + " in this " + amount);
 			String sql = "select username, quantity from ownership where stockSymbol = ?";
 			preparedStatement = conn.prepareStatement(sql);
@@ -83,6 +83,7 @@ public class PayDividends extends HttpServlet
 			}
 			
 			conn.commit();
+			conn.setAutoCommit(true);
 			//HttpSession session = request.getSession(true);
 			request.setAttribute("error", "Dividends Paid");
 			//session.setAttribute("companyID", companyID);
@@ -94,7 +95,7 @@ public class PayDividends extends HttpServlet
 		}
 		catch (SQLException e)
 		{	System.out.println(e.getMessage());	try {
-			conn.rollback();
+			conn.rollback(); conn.setAutoCommit(true);
 		} catch (SQLException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

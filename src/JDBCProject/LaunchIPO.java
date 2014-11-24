@@ -22,7 +22,7 @@ public class LaunchIPO extends HttpServlet
 	
 	public void init() throws ServletException
 	{
-		String dbURL2 = "jdbc:postgresql://10.42.0.1/cs387";
+		String dbURL2 = "jdbc:postgresql://localhost/cs387";
 		String user = "aman";
 		String pass = "password";
 
@@ -55,6 +55,7 @@ public class LaunchIPO extends HttpServlet
 		
 		try
 		{
+			conn.setAutoCommit(false);
 			String sql = "insert into stocks values(?,?,?,?)";
 			PreparedStatement preparedStatement = conn.prepareStatement(sql);
 			preparedStatement.setString(1, symbol);
@@ -77,9 +78,19 @@ public class LaunchIPO extends HttpServlet
 			request.setAttribute("error", "IPO Launched");			
 			RequestDispatcher rd = getServletContext().getRequestDispatcher("/CompanyHome.jsp");
 			rd.forward(request, response);
+			
+			conn.commit();
+			conn.setAutoCommit(true);
 		}
 		catch (SQLException e)
-		{	System.out.println(e.getMessage());	}
+		{	System.out.println(e.getMessage());	
+			try {
+				conn.rollback();conn.setAutoCommit(true);
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			}
 	}
 	
 	public static Timestamp getCurrentTimeStamp()

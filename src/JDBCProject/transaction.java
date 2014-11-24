@@ -47,7 +47,6 @@ public class transaction extends HttpServlet {
 			Class.forName("org.postgresql.Driver");
 
 			conn1 = DriverManager.getConnection(dbURL2, user, pass);
-			conn1.setAutoCommit(false);
 			st = conn1.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
 			System.out.println("init"+conn1);
 		} catch (Exception e) {
@@ -168,8 +167,8 @@ public class transaction extends HttpServlet {
 			while(rs.next())
 			{
 				float am = rs.getFloat(1);
-				if(am-addend >= 0) {rs.updateFloat(1, (float) (am - addend)); rs.updateRow(); conn1.commit(); errorOccured = "Not Enough Money";}
-				else {conn1.rollback(); System.out.println("rolling back"); errorOccured = "stock(s) bought";}
+				if(am-addend >= 0) {rs.updateFloat(1, (float) (am - addend)); rs.updateRow(); conn1.commit(); errorOccured = "stock(s) bought";}
+				else {conn1.rollback(); System.out.println("rolling back"); errorOccured = "Not Enough Money";}
 
 			}
 		}
@@ -512,6 +511,7 @@ public class transaction extends HttpServlet {
 				//float userBal = admin.userBalance("admin", "adminpass", username);
 				sql = "select id, bidprice, quantity, buydatetime, username  from buyOrders where stocksymbol=? order by bidPrice desc, buyDateTime asc limit 10";
 				try{
+					conn1.setAutoCommit(false);
 					preparedStatement = conn1.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
 					preparedStatement.setString(1, stocksym);
 					rs = preparedStatement.executeQuery();
@@ -571,7 +571,7 @@ public class transaction extends HttpServlet {
 					if(quant_sold > 0) updateSellerOwnership(username, stocksym, quant_sold, ltp, -1);
 
 					conn1.commit();
-
+					conn1.setAutoCommit(true);
 					request.setAttribute("error", quant_sold +" stocks sold");
 					request.setAttribute("resultStock", traderesult);
 					request.setAttribute("stocksym", retval);
@@ -582,7 +582,7 @@ public class transaction extends HttpServlet {
 				{
 					System.out.println(e.getMessage());
 					try {
-						conn1.rollback();
+						conn1.rollback(); conn1.setAutoCommit(true);
 					} catch (SQLException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -615,6 +615,7 @@ public class transaction extends HttpServlet {
 			{
 				sql = "select id, bidprice, quantity, buydatetime, username  from buyOrders where stocksymbol=? order by bidPrice desc, buyDateTime asc limit 10";
 				try{
+					conn1.setAutoCommit(false);
 					preparedStatement = conn1.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
 					preparedStatement.setString(1, stocksym);
 					rs = preparedStatement.executeQuery();
@@ -691,7 +692,7 @@ public class transaction extends HttpServlet {
 					updateSellerOwnership(username, stocksym, quant, ltp, -1);
 
 					conn1.commit();
-
+					conn1.setAutoCommit(true);
 					request.setAttribute("error", "<center> Order placed </center>");
 					request.setAttribute("resultStock", stock);
 					request.setAttribute("stocksym", retval);
@@ -704,7 +705,7 @@ public class transaction extends HttpServlet {
 				{
 					System.out.println(e.getMessage());
 					try {
-						conn1.rollback();
+						conn1.rollback(); conn1.setAutoCommit(true);
 					} catch (SQLException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -739,6 +740,7 @@ public class transaction extends HttpServlet {
 				//float userBal = admin.userBalance("admin", "adminpass", username);
 				sql = "select id, askprice, quantity, selldatetime, username  from sellOrders where stocksymbol=? order by askPrice asc, sellDateTime asc limit 10";
 				try{
+					conn1.setAutoCommit(false);
 					preparedStatement = conn1.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
 					preparedStatement.setString(1, stocksym);
 					rs = preparedStatement.executeQuery();
@@ -793,7 +795,7 @@ public class transaction extends HttpServlet {
 					//ADD MONEY TO ACCOUNT
 					updateBuyerOwnership(username, stocksym, quant_bought, ltp, 1);
 					redeemMoney(username, amount_due);
-
+					conn1.setAutoCommit(true);
 					request.setAttribute("error", errorOccured);
 					request.setAttribute("resultStock", stock);
 					request.setAttribute("stocksym", retval);
@@ -804,7 +806,7 @@ public class transaction extends HttpServlet {
 				{
 					System.out.println(e.getMessage());
 					try {
-						conn1.rollback();
+						conn1.rollback();conn1.setAutoCommit(true);
 					} catch (SQLException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -837,6 +839,7 @@ public class transaction extends HttpServlet {
 
 			sql = "select id, username, askprice, quantity, selldatetime  from sellOrders where stocksymbol=? order by askPrice desc, sellDateTime asc limit 10";
 			try{
+				conn1.setAutoCommit(false);
 				preparedStatement = conn1.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
 				preparedStatement.setString(1, stocksym);
 				rs = preparedStatement.executeQuery();
@@ -906,13 +909,13 @@ public class transaction extends HttpServlet {
 					}
 				}
 
-				redeemMoney(username, quant*bidPrice);
+				
 				if(ltp > 0)updateLtp(stocksym, ltp);
 				if(ltp>0)updateBuyerOwnership(username, stocksym, quant_bought, ltp, 1);
-
-				conn1.commit();
-
-				request.setAttribute("error", "<center> Order placed </center>");
+				redeemMoney(username, quant*bidPrice);
+				
+				conn1.setAutoCommit(true);
+				request.setAttribute("error", errorOccured);
 				request.setAttribute("resultStock", stock);
 				request.setAttribute("stocksym", retval);
 				request.setAttribute("username", username);
@@ -924,7 +927,7 @@ public class transaction extends HttpServlet {
 			{
 				System.out.println(e.getMessage());
 				try {
-					conn1.rollback();
+					conn1.rollback();conn1.setAutoCommit(true);
 				} catch (SQLException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();

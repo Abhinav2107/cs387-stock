@@ -25,13 +25,13 @@
         <input name="address" type="text" class="input password" placeholder="Address" />
         <!-- <div class="user-icon"></div> -->
         <input name="balance" type="text" class="input password" placeholder="Balance" />
-        <input type="hidden" name="type" value="login" />
+        <input type="hidden" name="type" value="register" />
         <!-- <div class="pass-icon"></div> -->
         </div>
 
         <div class="footer">
         <input type="submit" name="submit" value="Register" class="button" />
-        <input type="button" name="register" value="Login" class="register" onclick="location.href = 'login.jsp'"/>
+        <input type="button" name="register" value="Login" class="register" onclick="location.href = '/JDBCProject/login.jsp'"/>
         </div>
 
     </form>

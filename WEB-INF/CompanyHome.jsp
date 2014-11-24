@@ -86,8 +86,20 @@
 		</table>
 		<form name="login-form" class="login-form" action="PayDividends" method="post">
 		 <input type="text" name="amount" class="input username" placeholder="amount" />
-		 <input type="submit" name="payDividends" value="Pay" class="register" />
+		 <input type="submit" name="payDividends" value="Pay Dividends" class="register" />
 		 </form>
+		 
+
+		<form name="login-form" class="login-form" action="LaunchIPO" method="post">
+		<div class="content">
+        <input name="numShares" type="text" class="input numShares" placeholder="# of Shares" />
+        <input name="price" type="text" class="input price" placeholder="Price per Share" />
+        </div>
+
+        <div class="footer">
+        <input type="submit" name="submit" value="Launch IPO" class="button" />
+        </div>
+		</form>
 		 
 		 <% if(errorMessage!=null) out.print(errorMessage);%>
 		</center>
